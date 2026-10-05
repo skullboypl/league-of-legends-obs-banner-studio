@@ -15,7 +15,7 @@
 }
 body {
   margin: 0;
-  min-width: 360px;
+  min-width: 320px;
 }
 button,
 input,
@@ -2905,5 +2905,167 @@ html.widget #root {
   .sidebar-lang button {
     padding: 10px;
     width: auto;
+  }
+}
+
+/* ===== Menu mobilne ===== */
+.menu-toggle {
+  display: none;
+}
+.side-extra {
+  display: contents;
+}
+@media (max-width: 720px) {
+  .sidebar {
+    position: sticky;
+    top: 0;
+    z-index: 30;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-areas:
+      "brand toggle"
+      "tabs tabs"
+      "extra extra";
+    align-items: center;
+    gap: 10px 12px;
+    width: 100%;
+    padding: 12px 16px;
+    background: #111114;
+    border-right: 0;
+    border-bottom: 1px solid #25252b;
+  }
+  .sidebar .brand {
+    grid-area: brand;
+    justify-content: flex-start;
+    font-size: 20px;
+  }
+  .sidebar .brand > span:last-child {
+    display: block;
+    font-size: 20px;
+  }
+  .sidebar .brand-mark .icon {
+    width: 24px;
+    height: 28px;
+  }
+  .sidebar .brand small {
+    font-size: 6px;
+    margin-top: 3px;
+  }
+  .menu-toggle {
+    grid-area: toggle;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 13px;
+    font-size: 12px;
+  }
+  .menu-toggle .icon {
+    width: 16px;
+    height: 16px;
+  }
+  .sidebar[data-menu="open"] .menu-toggle {
+    background: #29191e;
+    border-color: #4b262e;
+  }
+  .sidebar .workspace-label,
+  .sidebar .sidebar-bottom,
+  .sidebar .nav-arrow {
+    display: none;
+  }
+  .sidebar nav {
+    grid-area: tabs;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+    margin: 0;
+  }
+  .sidebar nav button {
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    min-height: 54px;
+    padding: 8px 4px;
+    font-size: 11px;
+    text-align: center;
+  }
+  .sidebar nav button > span:not(.nav-arrow) {
+    display: inline;
+  }
+  .sidebar nav button.active:before {
+    display: none;
+  }
+  .side-extra {
+    grid-area: extra;
+    display: none;
+    padding-top: 10px;
+    border-top: 1px solid #25252b;
+  }
+  .sidebar[data-menu="open"] .side-extra {
+    display: block;
+    max-height: calc(100vh - 170px);
+    overflow-y: auto;
+  }
+  .sidebar .docs-nav {
+    display: grid;
+    gap: 4px;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+  .sidebar .docs-nav a {
+    min-height: 46px;
+    padding: 0 12px;
+    justify-content: flex-start;
+  }
+  .sidebar .docs-nav a > span {
+    display: inline;
+  }
+  .sidebar .docs-nav .hub-link {
+    border-bottom: 0;
+    margin: 0;
+    border-radius: 6px;
+  }
+  .sidebar-lang {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid #25252b;
+  }
+  .sidebar-lang button {
+    flex-direction: column;
+    justify-content: center;
+    gap: 6px;
+    width: auto;
+    padding: 10px 4px;
+    font-size: 11px;
+  }
+  .sidebar-lang button > span {
+    display: inline;
+  }
+  .workspace {
+    padding: 0 16px;
+  }
+  .topbar {
+    height: auto;
+    min-height: 46px;
+    padding: 10px 0;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .topbar > span:last-child {
+    font-size: 0;
+    gap: 8px;
+  }
+  .topbar > span:last-child .icon {
+    display: none;
+  }
+  .topbar > span:last-child .demo-badge {
+    font-size: 9px;
+  }
+  .page-heading h1 {
+    font-size: 24px;
+    max-width: none;
   }
 }

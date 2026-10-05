@@ -29,6 +29,7 @@ const dict: Record<string, Entry> = {
   "Polski": { en: "Polish", de: "Polnisch" },
   "Angielski": { en: "English", de: "Englisch" },
   "Niemiecki": { en: "German", de: "Deutsch" },
+  "Menu": { en: "Menu", de: "Menü" },
   "Język": { en: "Language", de: "Sprache" },
   "Wróć do Visual eXtras Hub": { en: "Back to Visual eXtras Hub", de: "Zurück zum Visual eXtras Hub" },
   "Instrukcja OBS": { en: "OBS guide", de: "OBS-Anleitung" },
