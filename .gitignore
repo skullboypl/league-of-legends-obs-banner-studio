@@ -1,0 +1,34 @@
+node_modules/
+dist/
+.env
+.env.dev
+.env.local
+.env.*.local
+
+# Deployment credentials and local keys
+lolbanner-deploy-key
+lolbanner-deploy-key.pub
+*.pem
+*.p12
+*.pfx
+
+# Local deployment configuration
+.caprover/
+.vercel/
+.netlify/
+
+# Tooling output
+.ssr/
+coverage/
+*.tsbuildinfo
+*.local
+*.tmp
+*.temp
+
+# Operating system and editors
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.log

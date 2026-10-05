@@ -1,0 +1,26 @@
+{
+  "name": "lol-banner-studio",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently -k -n api,web -c yellow,cyan \"node --watch --env-file-if-exists=.env.dev server/index.mjs\" \"vite --host 0.0.0.0 --port 5175 --strictPort\"",
+    "build": "tsc --noEmit && vite build",
+    "start": "node server/index.mjs",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "express": "^5.1.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.18",
+    "@types/react-dom": "^18.3.5",
+    "@vitejs/plugin-react": "^4.4.1",
+    "concurrently": "^9.1.2",
+    "typescript": "^5.7.3",
+    "vite": "^7.0.4"
+  }
+}
