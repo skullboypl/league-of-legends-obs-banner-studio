@@ -110,18 +110,47 @@ export function PlayerBanner({
     );
     return () => window.clearInterval(timer);
   }, [rotating, foot.pages.length]);
+  const formWins = recent?.games.filter(Boolean).length ?? 0;
+  const ringShare: Record<string, { text: string; share: number } | null> =
+    recent?.games.length
+      ? {
+          showForm: {
+            text: Math.round((formWins / recent.games.length) * 100) + "%",
+            share: formWins / recent.games.length,
+          },
+          showKda: { text: recent.kda.toFixed(1), share: recent.kda / 5 },
+          showCs: { text: recent.csPerMin.toFixed(1), share: recent.csPerMin / 10 },
+        }
+      : {};
   const tileNodes = (keys: string[], suffix = "") =>
-    keys.map((key) => (
-      <div key={key + suffix}>
-        <small>{extraTile[key].label}</small>
-        <strong>{extraTile[key].value}</strong>
-      </div>
-    ));
+    keys.map((key) => {
+      const ring = settings.extraView === "rings" ? ringShare[key] : null;
+      if (ring)
+        return (
+          <div key={key + suffix} className="ring-tile">
+            <span
+              className="ring"
+              style={{ "--p": Math.round(Math.min(1, ring.share) * 100) } as CSSProperties}
+            >
+              <b>{ring.text}</b>
+            </span>
+            <small>{extraTile[key].label}</small>
+          </div>
+        );
+      return (
+        <div key={key + suffix}>
+          <small>{extraTile[key].label}</small>
+          <strong>{extraTile[key].value}</strong>
+        </div>
+      );
+    });
   return (
     <article
       className={
         "player-banner banner-" +
         settings.style +
+        " theme-" +
+        settings.theme +
         " font-" +
         settings.font +
         (settings.glow ? " has-glow" : "") +

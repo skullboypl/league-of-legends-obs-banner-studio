@@ -30,6 +30,7 @@ export const defaultSettings: BannerSettings = {
   showCs: false,
   showTop: false,
   extraView: "strip",
+  theme: "classic",
 };
 
 export const samplePlayer: PlayerData = {

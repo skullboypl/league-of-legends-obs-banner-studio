@@ -7,6 +7,7 @@ import {
   dimensions,
   extraViews,
   presets,
+  themes,
   settingsFromUrl,
   settingsQuery,
   studioSettings,
@@ -457,6 +458,45 @@ export function App() {
                           </small>
                         </span>
                         {settings.style === p.id && (
+                          <b className="preset-check">✓</b>
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                </Card>
+                <Card title="Motyw banera" note="6 STYLÓW">
+                  <div className="theme-grid">
+                    {themes.map((t) => (
+                      <button
+                        key={t.id}
+                        className={
+                          "preset " + (settings.theme === t.id ? "chosen" : "")
+                        }
+                        aria-pressed={settings.theme === t.id}
+                        onClick={() => update("theme", t.id)}
+                      >
+                        <div className="preset-preview">
+                          <BannerFrame
+                            player={player}
+                            maxHeight={50}
+                            settings={{
+                              ...settings,
+                              theme: t.id,
+                              scale: 100,
+                              animate: false,
+                              extraView: "strip",
+                              showForm: false,
+                              showKda: false,
+                              showCs: false,
+                              showTop: false,
+                            }}
+                          />
+                        </div>
+                        <span>
+                          <strong>{t.name}</strong>
+                          <small>{t.note}</small>
+                        </span>
+                        {settings.theme === t.id && (
                           <b className="preset-check">✓</b>
                         )}
                       </button>

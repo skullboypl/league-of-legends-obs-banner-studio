@@ -340,7 +340,7 @@ export const pages = [
     description:
       'Jak dopasować baner rankingu League of Legends: kolor akcentu, tło, krój pisma, krycie, zaokrąglenie, poświata, animacja oraz widoczność elementów.',
     summary:
-      'Możesz zmienić kolor akcentu, tła i tekstu, krój pisma (Inter, Barlow Condensed, monospace), krycie 10–100%, zaokrąglenie 0–32 px, poświatę i animację oraz włączyć lub wyłączyć 15 elementów banera, w tym serię wygranych, formę z ostatnich 10 gier, KDA, CS na minutę i top championów.',
+      'Możesz zmienić kolor akcentu, tła i tekstu, krój pisma (Inter, Barlow Condensed, monospace), krycie 10–100%, zaokrąglenie 0–32 px, poświatę i animację oraz wybrać jeden z 6 motywów oraz włączyć lub wyłączyć 15 elementów banera, w tym serię wygranych, formę z ostatnich 10 gier, KDA, CS na minutę i top championów.',
     sections: [
       {
         id: 'wyglad',
@@ -363,6 +363,25 @@ export const pages = [
           },
           {
             p: 'Gotowe palety: Hextech `#c89b3c`, Riot `#eb3d4d`, Ocean `#38c9d5`, Emerald `#42cf9b`, Arcane `#a18afb` i Ice `#d3e4f5`.',
+          },
+        ],
+      },
+      {
+        id: 'motywy',
+        title: 'Motywy banera',
+        blocks: [
+          {
+            p: 'Motyw zmienia „skórę” banera, a układ pozostaje ten sam, więc każdy z 8 układów działa z każdym motywem (parametr `theme`).',
+          },
+          {
+            ul: [
+              '**Classic** – złoty pasek akcentu (domyślny).',
+              '**Glass** – półprzezroczyste szkło z rozmyciem tła.',
+              '**Neon** – świecąca ramka i poświata tekstu.',
+              '**Circuit** – siatka i ścięte rogi.',
+              '**Aurora** – animowana, powoli przesuwająca się zorza.',
+              '**Amoled** – czerń bez ramki.',
+            ],
           },
         ],
       },
@@ -406,7 +425,7 @@ export const pages = [
             },
           },
           {
-            p: 'Forma, KDA i CS liczone są z ostatnich 10 gier wybranej kolejki (Solo/Duo albo Flex), a top championi z punktów mastery. Te cztery elementy trafiają do stopki w obrębie tego samego banera, a prezentację wybierasz w zakładce Statystyki: **Stopka** i **Kapsuły** (statyczne) oraz **Rotacja** (stopka zmienia strony co ok. 4 sekundy) i **Taśma** (przewijana taśma) – oba animowane. Stopka dodaje do **wysokości źródła w OBS** ok. 56–120 px – aktualne wymiary zawsze pokazuje okno „Generuj link OBS”. Seria wygranych i seria awansowa pojawiają się przy randze tylko wtedy, gdy gracz ją ma.',
+            p: 'Forma, KDA i CS liczone są z ostatnich 10 gier wybranej kolejki (Solo/Duo albo Flex), a top championi z punktów mastery. Te cztery elementy trafiają do stopki w obrębie tego samego banera, a prezentację wybierasz w zakładce Statystyki: **Stopka**, **Kapsuły** i **Pierścienie** (statyczne) oraz **Rotacja** (stopka zmienia strony co ok. 4 sekundy) i **Taśma** (przewijana taśma) – oba animowane. Stopka dodaje do **wysokości źródła w OBS** ok. 56–120 px – aktualne wymiary zawsze pokazuje okno „Generuj link OBS”. Seria wygranych i seria awansowa pojawiają się przy randze tylko wtedy, gdy gracz ją ma.',
           },
           { note: 'Pasek LP jest ukryty dla rang Master, Grandmaster i Challenger, bo tam LP nie ma górnego limitu 100.' },
         ],
@@ -465,7 +484,8 @@ export const pages = [
                 ['`queue`', '`solo` lub `flex`', '`solo`'],
                 ['`style`', '`crest`, `lane`, `compact`, `card`, `split`, `minimal`, `tower`, `scoreboard`', '`crest`'],
                 ['`font`', '`sans`, `condensed`, `mono`', '`sans`'],
-                ['`extraView`', 'prezentacja formy, KDA, CS i top championów: `strip`, `pills`, `cycle`, `ticker`', '`strip`'],
+                ['`extraView`', 'prezentacja formy, KDA, CS i top championów: `strip`, `pills`, `rings`, `cycle`, `ticker`', '`strip`'],
+                ['`theme`', 'motyw: `classic`, `glass`, `neon`, `circuit`, `aurora`, `amoled`', '`classic`'],
               ],
             },
           },

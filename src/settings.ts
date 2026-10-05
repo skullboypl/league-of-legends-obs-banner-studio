@@ -1,5 +1,5 @@
 import { defaultSettings, platforms } from "./data";
-import type { BannerSettings, BannerStyle } from "./types";
+import type { BannerSettings, BannerStyle, BannerTheme } from "./types";
 
 export const presets: {
   id: BannerStyle;
@@ -94,6 +94,8 @@ export function sanitizeSettings(
   if (presets.some((p) => p.id === input.style))
     result.style = input.style as BannerStyle;
   if (input.queue === "flex") result.queue = "flex";
+  if (themes.some((t) => t.id === input.theme))
+    result.theme = input.theme as BannerTheme;
   if (extraViews.some(([id]) => id === input.extraView))
     result.extraView = input.extraView as BannerSettings["extraView"];
   if (input.font === "mono" || input.font === "condensed")
@@ -144,17 +146,31 @@ export function studioSettings() {
 const extraTileWidths = {
   strip: { showForm: 98, showKda: 36, showCs: 48, showTop: 86 },
   pills: { showForm: 162, showKda: 72, showCs: 92, showTop: 186 },
+  rings: { showForm: 84, showKda: 64, showCs: 84, showTop: 86 },
 } as const;
-const EXTRA_GAP = { strip: 22, pills: 14 } as const;
-const EXTRA_ROW = { strip: 36, pills: 24 } as const;
+const EXTRA_GAP = { strip: 22, pills: 14, rings: 22 } as const;
+const EXTRA_ROW = { strip: 36, pills: 24, rings: 36 } as const;
 const EXTRA_ROW_GAP = 8;
 const EXTRA_PADDING = 10;
 export const extraViews = [
   ["strip", "Stopka", "Statyczne kafelki w stopce banera"],
   ["pills", "Kapsuły", "Statyczne, zwarte etykiety w stopce"],
+  ["rings", "Pierścienie", "Statyczne wskaźniki kołowe"],
   ["cycle", "Rotacja", "Animowane: stopka zmienia strony co kilka sekund"],
   ["ticker", "Taśma", "Animowane: przewijana taśma statystyk"],
 ] as const;
+export const themes: {
+  id: BannerTheme;
+  name: string;
+  note: string;
+}[] = [
+  { id: "classic", name: "Classic", note: "Złoty pasek akcentu" },
+  { id: "glass", name: "Glass", note: "Szkło i rozmycie" },
+  { id: "neon", name: "Neon", note: "Świecąca ramka" },
+  { id: "circuit", name: "Circuit", note: "Siatka i ścięte rogi" },
+  { id: "aurora", name: "Aurora", note: "Animowana zorza" },
+  { id: "amoled", name: "Amoled", note: "Czerń bez ramki" },
+];
 export function extraTiles(settings: BannerSettings) {
   return (
     Object.keys(extraTileWidths.strip) as (keyof typeof extraTileWidths.strip)[]
@@ -165,7 +181,10 @@ export function extraLayout(settings: BannerSettings) {
   if (!tiles.length) return { height: 0, pages: [] as (typeof tiles)[] };
   const preset = presets.find((p) => p.id === settings.style)!;
   const room = preset.width - 48;
-  const mode = settings.extraView === "pills" ? "pills" : "strip";
+  const mode =
+    settings.extraView === "pills" || settings.extraView === "rings"
+      ? settings.extraView
+      : "strip";
   const widths = extraTileWidths[mode];
   const gap = EXTRA_GAP[mode];
   const rows: (typeof tiles)[] = [[]];
