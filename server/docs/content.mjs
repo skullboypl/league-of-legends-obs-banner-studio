@@ -42,7 +42,7 @@ export const layouts = [
   ['tower', 'Tower', 'Układ pionowy', 290, 420],
   ['scoreboard', 'Scoreboard', 'Wyniki na pierwszym planie', 820, 210],
   ['deck', 'Deck (animowany)', 'Karty statystyk zmieniają się same', 520, 128],
-  ['orbit', 'Orbit (animowany)', 'Okrągły licznik LP', 300, 416],
+  ['orbit', 'Orbit (animowany)', 'Okrągły licznik LP', 300, 448],
   ['marquee', 'Marquee (animowany)', 'Przewijana taśma transmisyjna', 920, 64],
   ['hex', 'Hextech (animowany)', 'Obracająca się świecąca ramka', 560, 170],
 ];
