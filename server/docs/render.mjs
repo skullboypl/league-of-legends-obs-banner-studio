@@ -266,7 +266,12 @@ function head({ title, description, url, site, graph, noindex = false, ogType = 
 <meta property="og:title" content="${escapeHtml(title)}">
 <meta property="og:description" content="${escapeHtml(description)}">
 <meta property="og:url" content="${url}">
-<meta name="twitter:card" content="summary">
+<meta property="og:image" content="${site}/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="LoL Banner Studio – baner rankingu League of Legends">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="${site}/og-image.png">
 <meta name="twitter:title" content="${escapeHtml(title)}">
 <meta name="twitter:description" content="${escapeHtml(description)}">
 ${graph ? `<script type="application/ld+json">${jsonLd(graph)}</script>` : ''}
