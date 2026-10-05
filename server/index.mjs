@@ -45,6 +45,13 @@ app.get('/api/health', (_request, response) => {
   response.json({ ok: true, riotKeyConfigured: Boolean(apiKey) });
 });
 
+app.get('/riot.txt', (_request, response) => {
+  const verificationCode = String(process.env.RIOT_VERIFY || '').trim();
+  if (!verificationCode) return response.status(404).type('text/plain').send('');
+  response.set('Cache-Control', 'public, max-age=300');
+  return response.type('text/plain').send(`${verificationCode}\n`);
+});
+
 app.get('/api/player', async (request, response) => {
   if (!allowRequest(request.ip || 'unknown')) {
     return response.status(429).json({ error: 'Za dużo zapytań. Spróbuj ponownie za minutę.' });

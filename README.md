@@ -31,6 +31,7 @@ Put your development key in `.env.dev`:
 
 ```env
 RIOT_API_KEY=RGAPI-your-development-key
+RIOT_VERIFY=riot-verification-code
 PORT=8787
 ```
 
@@ -47,6 +48,8 @@ This repository includes `captain-definition`, `Dockerfile` and `deploy/nginx.co
 5. Set the app domain and enable HTTPS before sharing the widget URL.
 
 Nginx serves the built Studio on port 80 and proxies `/api/*` to the internal Node API on port 8787. The browser only sees the public API routes; the Riot key remains a runtime environment variable.
+
+For Riot product verification, set `RIOT_VERIFY` in the same environment. The backend generates `https://your-domain/riot.txt` at runtime with exactly that value, so the verification code does not need to be committed to the repository.
 
 ## Project structure
 
