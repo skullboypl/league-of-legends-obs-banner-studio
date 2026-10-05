@@ -122,7 +122,12 @@ async function loadRecent(region, puuid, queue) {
 
 app.disable('x-powered-by');
 app.get('/api/health', (_request, response) => {
-  response.json({ ok: true, riotKeyConfigured: Boolean(apiKey) });
+  // RIOT_APPROVED=1 wyłącza komunikat o wersji demonstracyjnej po akceptacji aplikacji przez Riot.
+  response.json({
+    ok: true,
+    riotKeyConfigured: Boolean(apiKey),
+    demoMode: process.env.RIOT_APPROVED !== '1',
+  });
 });
 
 app.get('/riot.txt', (_request, response) => {

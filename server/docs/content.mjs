@@ -823,6 +823,7 @@ export const pages = [
       ['Które serwery są obsługiwane?', 'Szesnaście serwerów LoL, m.in. euw1, eun1, na1, kr. Pełna lista: [serwery i Riot ID](/docs/serwery-i-riot-id).'],
       ['Czy mój klucz Riot API jest bezpieczny?', 'Tak. Klucz jest tylko na serwerze i nie trafia do przeglądarki ani do linku. Zobacz [prywatność i bezpieczeństwo](/docs/prywatnosc-i-bezpieczenstwo).'],
       ['Mogę uruchomić własną instancję?', 'Tak. Projekt ma gotową konfigurację do CapRover (Dockerfile, Nginx, serwer Node). Potrzebujesz własnego klucza Riot API.'],
+      ['Dlaczego Studio pokazuje komunikat o wersji demonstracyjnej?', 'LoL Banner Studio czeka na akceptację aplikacji w Riot Developer Portal. Do tego czasu strona działa w trybie ograniczonym: dane z Riot API mogą być chwilowo niedostępne lub ograniczone, a wygenerowane linki działają, ale wygląd i dane mogą się jeszcze zmieniać.'],
       ['Baner nie działa – co robić?', 'Sprawdź komunikat błędu i skorzystaj z [rozwiązywania problemów](/docs/rozwiazywanie-problemow).'],
     ],
     related: ['szybki-start', 'rozwiazywanie-problemow'],

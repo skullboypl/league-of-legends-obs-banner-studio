@@ -1,5 +1,7 @@
 import { groups, pages, pageBySlug, SITE_NAME, UPDATED } from './content.mjs';
 
+const REPO_URL = 'https://github.com/skullboypl/league-of-legends-obs-banner-studio';
+
 const escapeHtml = (value) =>
   String(value).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
@@ -79,6 +81,7 @@ const publisher = (site) => ({
   '@id': `${site}/#organization`,
   name: SITE_NAME,
   url: `${site}/`,
+  sameAs: [REPO_URL],
 });
 
 const application = (site) => ({
@@ -94,6 +97,8 @@ const application = (site) => ({
     'Darmowy generator banerów rankingu League of Legends dla OBS Studio i Streamlabs z danymi z oficjalnego Riot API.',
   offers: { '@type': 'Offer', price: '0', priceCurrency: 'PLN' },
   license: 'https://opensource.org/licenses/MIT',
+  codeRepository: REPO_URL,
+  sameAs: [REPO_URL],
 });
 
 function jsonLd(graph) {
@@ -240,7 +245,7 @@ function sidebar(currentSlug) {
 }
 
 const footer =
-  '<footer class="site"><p>LoL Banner Studio is not endorsed by Riot Games and does not reflect the views or opinions of Riot Games or anyone officially involved in producing or managing Riot Games properties. Riot Games and all associated properties are trademarks or registered trademarks of Riot Games, Inc.</p></footer>';
+  '<footer class="site"><p><a href="'+ REPO_URL +'" rel="noopener">Kod źródłowy na GitHub</a> · licencja MIT</p><p>LoL Banner Studio is not endorsed by Riot Games and does not reflect the views or opinions of Riot Games or anyone officially involved in producing or managing Riot Games properties. Riot Games and all associated properties are trademarks or registered trademarks of Riot Games, Inc.</p></footer>';
 
 function head({ title, description, url, site, graph, noindex = false, ogType = 'article' }) {
   const robots = noindex

@@ -46,6 +46,9 @@ const paths = {
     "M8 4h8v6a4 4 0 0 1-8 0V4ZM8 6H4v1a4 4 0 0 0 4 4M16 6h4v1a4 4 0 0 1-4 4M12 14v4m-4 3h8",
   star: "m12 3 2.9 5.9 6.5.9-4.7 4.6 1.1 6.5L12 17.8 6.2 20.9l1.1-6.5L2.6 9.8l6.5-.9L12 3Z",
   heading: "M4 7V5h16v2M12 5v14m-3 0h6",
+  home: "M3 11 12 3l9 8v10h-6v-6H9v6H3z",
+  github:
+    "M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22",
 };
 const optionIcons: Record<string, keyof typeof paths> = {
   showIcon: "user",
@@ -173,6 +176,8 @@ export function App() {
   const [importValue, setImportValue] = useState("");
   const dialog = useRef<HTMLDialogElement>(null);
   const [exportOpen, setExportOpen] = useState(false);
+  const demoDialog = useRef<HTMLDialogElement>(null);
+  const [demo, setDemo] = useState(false);
   const frameHost = useRef<HTMLDivElement>(null);
   const [frameRoom, setFrameRoom] = useState(0);
   const request = useRef<AbortController>();
@@ -203,6 +208,29 @@ export function App() {
   useEffect(() => {
     loadPlayer();
     return () => request.current?.abort();
+  }, []);
+  useEffect(() => {
+    // Komunikat o wersji demonstracyjnej: raz na sesję, dopóki serwer nie ma RIOT_APPROVED=1.
+    let active = true;
+    fetch("/api/health")
+      .then((response) => response.json())
+      .catch(() => ({ demoMode: true }))
+      .then((health) => {
+        if (!active) return;
+        const isDemo = health.demoMode !== false;
+        setDemo(isDemo);
+        if (!isDemo) return;
+        try {
+          if (sessionStorage.getItem("lol-demo-seen")) return;
+        } catch {
+          /* Storage może być zablokowany. */
+        }
+        if (demoDialog.current && !demoDialog.current.open)
+          demoDialog.current.showModal();
+      });
+    return () => {
+      active = false;
+    };
   }, []);
   useEffect(() => {
     // Szerokość miejsca na podgląd iframe, do skalowania do okna.
@@ -382,6 +410,11 @@ export function App() {
           ))}
         </nav>
         <div className="docs-nav" role="navigation" aria-label="Dokumentacja">
+          <a href="https://vxh.pl/" className="hub-link">
+            <Icon name="home" />
+            <span>Wróć do Visual eXtras Hub</span>
+            <span className="nav-arrow">›</span>
+          </a>
           <a href="/docs/obs-studio">
             <Icon name="monitor" />
             <span>Instrukcja OBS</span>
@@ -418,6 +451,14 @@ export function App() {
             Warsztat <i>/</i> <b>{currentTab.name}</b>
           </span>
           <span>
+            {demo && (
+              <button
+                className="demo-badge"
+                onClick={() => demoDialog.current?.showModal()}
+              >
+                Wersja demonstracyjna
+              </button>
+            )}
             <Icon name="monitor" /> OBS & STREAMLABS{" "}
             <i className="status-dot" />
           </span>
@@ -856,7 +897,15 @@ export function App() {
         </main>
         <footer>
           <span>
-            Banner Studio <b>/ LEAGUE</b> · by Skull
+            Banner Studio <b>/ LEAGUE</b> · by Skull ·{" "}
+            <a
+              className="footer-link"
+              href="https://github.com/skullboypl/league-of-legends-obs-banner-studio"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Icon name="github" /> GitHub
+            </a>
           </span>
           <p>
             LoL Banner Studio is not endorsed by Riot Games and does not reflect
@@ -872,6 +921,40 @@ export function App() {
           {notice}
         </div>
       )}
+      <dialog
+        ref={demoDialog}
+        className="demo-dialog"
+        aria-labelledby="demo-title"
+        onClose={() => {
+          try {
+            sessionStorage.setItem("lol-demo-seen", "1");
+          } catch {
+            /* Storage może być zablokowany. */
+          }
+        }}
+      >
+        <span className="demo-pill">TRYB OGRANICZONY</span>
+        <h2 id="demo-title">Wersja demonstracyjna</h2>
+        <p>
+          LoL Banner Studio czeka na akceptację aplikacji w{" "}
+          <strong>Riot Developer Portal</strong>. Do tego czasu strona działa w
+          trybie ograniczonym.
+        </p>
+        <ul>
+          <li>Dane z Riot API mogą być chwilowo niedostępne lub ograniczone.</li>
+          <li>
+            Część statystyk (forma, KDA, top championi) może się nie wczytać. W
+            podglądzie zastępują je dane demonstracyjne z oznaczeniem.
+          </li>
+          <li>
+            Wygenerowane linki będą działać, ale wygląd i dane mogą się jeszcze
+            zmieniać.
+          </li>
+        </ul>
+        <button className="primary" onClick={() => demoDialog.current?.close()}>
+          Rozumiem
+        </button>
+      </dialog>
       <dialog
         ref={dialog}
         className="export-dialog"
