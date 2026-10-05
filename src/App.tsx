@@ -26,6 +26,45 @@ const paths = {
   layers: "m12 3 9 5-9 5-9-5 9-5ZM3 12l9 5 9-5M3 16l9 5 9-5",
   link: "m10 13 4-4M8 16l-1 1a4 4 0 0 1-6-6l5-5a4 4 0 0 1 6 0m0 12a4 4 0 0 0 6 0l5-5a4 4 0 0 0-6-6l-1 1",
   book: "M4 4h7l1 2 1-2h7v16h-7l-1 1-1-1H4zM12 6v15",
+  user: "M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM4 20a8 8 0 0 1 16 0",
+  levelUp: "M12 19V5m0 0-5 5m5-5 5 5",
+  hash: "M5 9h14M5 15h14M10 4 8 20m8-16-2 16",
+  globe:
+    "M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18ZM3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18",
+  shield: "M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6l-8-3Z",
+  bolt: "M13 2 4 14h7l-1 8 9-12h-7l1-8Z",
+  percent:
+    "M19 5 5 19M7 9a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm10 10a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z",
+  record: "M4 6h16M4 12h10M4 18h6",
+  progress: "M3 9h18v6H3zM6 12h6",
+  flame: "M12 3c1 4 5 5 5 10a5 5 0 0 1-10 0c0-2 1-3 2-4 0 2 1 3 2 3 0-3-1-5 1-9Z",
+  activity: "M3 12h4l3-8 4 16 3-8h4",
+  crosshair:
+    "M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18ZM12 3v5m0 8v5M3 12h5m8 0h5",
+  coin: "M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18ZM12 7v10M9 10c0-1 1-1.5 3-1.5s3 .5 3 1.5-1 1.5-3 2-3 1-3 2 1 1.5 3 1.5 3-.5 3-1.5",
+  trophy:
+    "M8 4h8v6a4 4 0 0 1-8 0V4ZM8 6H4v1a4 4 0 0 0 4 4M16 6h4v1a4 4 0 0 1-4 4M12 14v4m-4 3h8",
+  star: "m12 3 2.9 5.9 6.5.9-4.7 4.6 1.1 6.5L12 17.8 6.2 20.9l1.1-6.5L2.6 9.8l6.5-.9L12 3Z",
+  heading: "M4 7V5h16v2M12 5v14m-3 0h6",
+};
+const optionIcons: Record<string, keyof typeof paths> = {
+  showIcon: "user",
+  showLevel: "levelUp",
+  showTag: "hash",
+  showRegion: "globe",
+  showRank: "shield",
+  showLP: "bolt",
+  showWinrate: "percent",
+  showRecord: "record",
+  showGames: "layers",
+  showProgress: "progress",
+  showStreak: "flame",
+  showForm: "activity",
+  showKda: "crosshair",
+  showCs: "coin",
+  showTop: "trophy",
+  showMastery: "star",
+  showTopline: "heading",
 };
 function Icon({ name }: { name: keyof typeof paths }) {
   return (
@@ -41,6 +80,40 @@ function Icon({ name }: { name: keyof typeof paths }) {
     >
       <path d={paths[name]} />
     </svg>
+  );
+}
+function ViewPreview({ id }: { id: string }) {
+  const tile = (key: number) => (
+    <div key={key}>
+      <i />
+      <b />
+    </div>
+  );
+  return (
+    <span className={"vp vp-" + id} aria-hidden="true">
+      {id === "strip" && [0, 1, 2, 3].map(tile)}
+      {id === "pills" &&
+        [0, 1, 2].map((key) => (
+          <em key={key}>
+            <i />
+            <b />
+          </em>
+        ))}
+      {id === "rings" && [0, 1, 2].map((key) => <u key={key} />)}
+      {id === "cycle" && (
+        <>
+          <span>{[0, 1].map(tile)}</span>
+          <span>{[0, 1, 2].map(tile)}</span>
+          <s>
+            <i />
+            <i />
+          </s>
+        </>
+      )}
+      {id === "ticker" && (
+        <span>{[0, 1, 2, 3, 4, 5].map(tile)}</span>
+      )}
+    </span>
   );
 }
 function Card({
@@ -607,6 +680,9 @@ export function App() {
                 </p>
                 {options.map(([key, label, hint]) => (
                   <label className="toggle" key={key}>
+                    <span className="opt-icon">
+                      <Icon name={optionIcons[key]} />
+                    </span>
                     <span>
                       <strong>{label}</strong>
                       <small>{hint}</small>
@@ -647,6 +723,7 @@ export function App() {
                       className={settings.extraView === id ? "active" : ""}
                       onClick={() => update("extraView", id)}
                     >
+                      <ViewPreview id={id} />
                       <strong>{name}</strong>
                       <small>{note}</small>
                     </button>
