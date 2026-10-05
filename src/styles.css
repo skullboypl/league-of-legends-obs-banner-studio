@@ -1714,7 +1714,7 @@ footer p {
   }
 }
 .export-dialog {
-  width: min(520px, calc(100vw - 32px));
+  width: min(680px, calc(100vw - 32px));
   color: #eaeaf0;
   background: #17171c;
   border: 1px solid #393941;
@@ -2202,4 +2202,39 @@ html.widget #root {
   .player-banner.theme-aurora {
     animation: none;
   }
+}
+
+.obs-preview-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 16px 0 8px;
+  font-size: 12px;
+  font-weight: 600;
+}
+.obs-preview-head small {
+  color: #7f7f8a;
+  font-weight: 400;
+}
+.obs-frame {
+  position: relative;
+  display: grid;
+  place-items: center;
+  padding: 18px;
+  min-height: 120px;
+  border: 1px solid #393941;
+  border-radius: 8px;
+  overflow: hidden;
+}
+.obs-frame-box {
+  position: relative;
+}
+.obs-frame-box iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  border: 0;
+  background: transparent;
+  transform-origin: top left;
 }

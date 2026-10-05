@@ -96,6 +96,9 @@ export function App() {
   const [scene, setScene] = useState("rift");
   const [importValue, setImportValue] = useState("");
   const dialog = useRef<HTMLDialogElement>(null);
+  const [exportOpen, setExportOpen] = useState(false);
+  const frameHost = useRef<HTMLDivElement>(null);
+  const [frameRoom, setFrameRoom] = useState(0);
   const request = useRef<AbortController>();
   const size = dimensions(settings);
   const selected = presets.find((p) => p.id === settings.style)!;
@@ -125,6 +128,15 @@ export function App() {
     loadPlayer();
     return () => request.current?.abort();
   }, []);
+  useEffect(() => {
+    // Szerokość miejsca na podgląd iframe, do skalowania do okna.
+    if (!exportOpen || !frameHost.current) return;
+    const observer = new ResizeObserver(([entry]) =>
+      setFrameRoom(entry.contentRect.width),
+    );
+    observer.observe(frameHost.current);
+    return () => observer.disconnect();
+  }, [exportOpen]);
   useEffect(() => {
     // Forma z meczów zależy od kolejki, więc po jej zmianie pobieramy dane ponownie.
     if (loaded) loadPlayer();
@@ -204,6 +216,7 @@ export function App() {
       setTab("player");
       return;
     }
+    setExportOpen(true);
     dialog.current?.showModal();
   }
   const range = (
@@ -770,7 +783,11 @@ export function App() {
           {notice}
         </div>
       )}
-      <dialog ref={dialog} className="export-dialog">
+      <dialog
+        ref={dialog}
+        className="export-dialog"
+        onClose={() => setExportOpen(false)}
+      >
         <div className="dialog-heading">
           <h2>Dodaj baner do OBS</h2>
           <button aria-label="Zamknij" onClick={() => dialog.current?.close()}>
@@ -778,6 +795,35 @@ export function App() {
           </button>
         </div>
         <p>Skopiuj adres do źródła „Przeglądarka”.</p>
+        {exportOpen && (
+          <>
+            <div className="obs-preview-head">
+              <span>Podgląd z wygenerowanego linku</span>
+              <small>tak zobaczysz go w OBS</small>
+            </div>
+            <div ref={frameHost} className={"obs-frame scene-" + scene}>
+              {(() => {
+                const fit = Math.min(1, (frameRoom || size.width) / size.width);
+                return (
+                  <div
+                    className="obs-frame-box"
+                    style={{ width: size.width * fit, height: size.height * fit }}
+                  >
+                    <iframe
+                      title="Podgląd widżetu z wygenerowanego linku"
+                      src={widgetUrl(settings)}
+                      style={{
+                        width: size.width,
+                        height: size.height,
+                        transform: "scale(" + fit + ")",
+                      }}
+                    />
+                  </div>
+                );
+              })()}
+            </div>
+          </>
+        )}
         <label>
           Adres źródła
           <input
