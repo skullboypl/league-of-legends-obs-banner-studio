@@ -5,6 +5,7 @@ import { defaultSettings, platforms, samplePlayer } from "./data";
 import { BannerFrame, RankEmblem } from "./PlayerBanner";
 import {
   dimensions,
+  avatarShapes,
   extraViews,
   presets,
   themes,
@@ -82,7 +83,9 @@ const options = [
   ["showForm", "Forma", "Wyniki W/L z ostatnich 10 gier kolejki"],
   ["showKda", "KDA", "Średnie KDA z ostatnich 10 gier"],
   ["showCs", "CS na minutę", "Średnia z ostatnich 10 gier"],
-  ["showTop", "Top championi", "Trzech championów z najwyższym mastery"],
+  ["showTop", "Top championi", "Championi z najwyższym mastery"],
+  ["showMastery", "Wynik mastery", "Łączny wynik mastery konta"],
+  ["showTopline", "Pasek tytułowy", "Napis LEAGUE OF LEGENDS i nazwa kolejki (układy klasyczne)"],
 ] as const;
 
 export function App() {
@@ -244,7 +247,7 @@ export function App() {
     </button>
   );
   const range = (
-    key: "radius" | "opacity" | "scale",
+    key: "radius" | "opacity" | "scale" | "speed" | "topCount",
     label: string,
     min: number,
     max: number,
@@ -576,6 +579,21 @@ export function App() {
                   {range("radius", "Zaokrąglenie", 0, 32, " px")}
                   {range("opacity", "Krycie tła", 10, 100, "%")}
                   {range("scale", "Skala", 60, 160, "%")}
+                  {range("speed", "Tempo animacji", 50, 200, "%")}
+                  <div className="shape-picker" role="radiogroup" aria-label="Kształt awatara">
+                    <span>Kształt awatara</span>
+                    {avatarShapes.map(([id, name]) => (
+                      <button
+                        key={id}
+                        role="radio"
+                        aria-checked={settings.avatarShape === id}
+                        className={settings.avatarShape === id ? "active" : ""}
+                        onClick={() => update("avatarShape", id)}
+                      >
+                        {name}
+                      </button>
+                    ))}
+                  </div>
                   {toggle("glow", "Poświata akcentu")}
                   {toggle("animate", "Animowana linia akcentu")}
                 </Card>
@@ -618,6 +636,7 @@ export function App() {
                       ). Błąd 403 oznacza klucz bez dostępu do tego API, 429 – limit zapytań.
                     </p>
                   )}
+                {range("topCount", "Liczba championów", 1, 3, "")}
                 <div className="view-picker" role="radiogroup" aria-label="Prezentacja dodatkowych statystyk">
                   <span>Prezentacja forma / KDA / CS / top championi</span>
                   {extraViews.map(([id, name, note]) => (

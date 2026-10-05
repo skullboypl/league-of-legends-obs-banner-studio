@@ -78,7 +78,7 @@ export const presets: {
     name: "Orbit",
     note: "Okrągły licznik LP",
     width: 300,
-    height: 416,
+    height: 448,
     animated: true,
   },
   {
@@ -117,6 +117,8 @@ export function sanitizeSettings(
     ["opacity", 10, 100],
     ["radius", 0, 32],
     ["scale", 60, 160],
+    ["speed", 50, 200],
+    ["topCount", 1, 3],
   ] as const) {
     const value = Number(input[key]);
     if (input[key] !== undefined && Number.isFinite(value))
@@ -129,6 +131,13 @@ export function sanitizeSettings(
   if (presets.some((p) => p.id === input.style))
     result.style = input.style as BannerStyle;
   if (input.queue === "flex") result.queue = "flex";
+  result.topCount = Math.round(result.topCount);
+  if (
+    input.avatarShape === "square" ||
+    input.avatarShape === "hex" ||
+    input.avatarShape === "round"
+  )
+    result.avatarShape = input.avatarShape;
   if (themes.some((t) => t.id === input.theme))
     result.theme = input.theme as BannerTheme;
   if (extraViews.some(([id]) => id === input.extraView))
@@ -179,14 +188,19 @@ export function studioSettings() {
 // Stopka z dodatkowymi statystykami wewnątrz banera. Szerokości kafelków (px) służą do
 // policzenia wierszy lub stron, żeby wymiary źródła OBS były przewidywalne.
 const extraTileWidths = {
-  strip: { showForm: 98, showKda: 36, showCs: 48, showTop: 86 },
-  pills: { showForm: 162, showKda: 72, showCs: 92, showTop: 186 },
-  rings: { showForm: 84, showKda: 64, showCs: 84, showTop: 86 },
+  strip: { showForm: 98, showKda: 36, showCs: 48, showTop: 86, showMastery: 56 },
+  pills: { showForm: 162, showKda: 72, showCs: 92, showTop: 186, showMastery: 120 },
+  rings: { showForm: 84, showKda: 64, showCs: 84, showTop: 86, showMastery: 62 },
 } as const;
 const EXTRA_GAP = { strip: 22, pills: 14, rings: 22 } as const;
 const EXTRA_ROW = { strip: 36, pills: 24, rings: 36 } as const;
 const EXTRA_ROW_GAP = 8;
 const EXTRA_PADDING = 10;
+export const avatarShapes = [
+  ["round", "Okrągły"],
+  ["square", "Kwadrat"],
+  ["hex", "Sześciokąt"],
+] as const;
 export const extraViews = [
   ["strip", "Stopka", "Statyczne kafelki w stopce banera"],
   ["pills", "Kapsuły", "Statyczne, zwarte etykiety w stopce"],

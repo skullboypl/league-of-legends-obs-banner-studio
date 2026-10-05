@@ -14,6 +14,8 @@ export type BannerStyle =
 
 export type ExtraView = "strip" | "pills" | "rings" | "cycle" | "ticker";
 
+export type AvatarShape = "round" | "square" | "hex";
+
 export type BannerTheme =
   | "classic"
   | "glass"
@@ -87,4 +89,9 @@ export type BannerSettings = {
   showTop: boolean;
   extraView: ExtraView;
   theme: BannerTheme;
+  speed: number;
+  topCount: number;
+  showMastery: boolean;
+  showTopline: boolean;
+  avatarShape: AvatarShape;
 };

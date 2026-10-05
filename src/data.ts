@@ -31,6 +31,11 @@ export const defaultSettings: BannerSettings = {
   showTop: true,
   extraView: "strip",
   theme: "classic",
+  speed: 100,
+  topCount: 3,
+  showMastery: false,
+  showTopline: true,
+  avatarShape: "round",
 };
 
 export const samplePlayer: PlayerData = {

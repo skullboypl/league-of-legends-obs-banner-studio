@@ -20,7 +20,7 @@ function ClassicBanner({
   const apex =
     ranked && ["MASTER", "GRANDMASTER", "CHALLENGER"].includes(ranked.tier);
   const recent = player.recent;
-  const top = player.mastery?.top ?? [];
+  const top = (player.mastery?.top ?? []).slice(0, settings.topCount);
   const series = ranked?.miniSeries;
   const stats = [
     settings.showWinrate && {
@@ -57,6 +57,10 @@ function ClassicBanner({
       label: "CS / MIN",
       value: recent?.games.length ? recent.csPerMin.toFixed(1) : "—",
     },
+    showMastery: {
+      label: "MASTERY",
+      value: player.mastery ? player.mastery.score.toLocaleString("pl-PL") : "—",
+    },
     showTop: {
       label: "TOP CHAMPIONI",
       value: top.length ? (
@@ -83,10 +87,10 @@ function ClassicBanner({
     if (!rotating) return setPage(0);
     const timer = window.setInterval(
       () => setPage((value) => (value + 1) % foot.pages.length),
-      4200,
+      4200 / (settings.speed / 100),
     );
     return () => window.clearInterval(timer);
-  }, [rotating, foot.pages.length]);
+  }, [rotating, foot.pages.length, settings.speed]);
   const formWins = recent?.games.filter(Boolean).length ?? 0;
   const ringShare: Record<string, { text: string; share: number } | null> =
     recent?.games.length
@@ -132,7 +136,9 @@ function ClassicBanner({
         settings.font +
         (settings.glow ? " has-glow" : "") +
         (settings.animate ? " animated" : "") +
-        (foot.height ? " with-foot" : "")
+        (foot.height ? " with-foot" : "") +
+        " shape-" +
+        settings.avatarShape
       }
       style={
         {
@@ -145,15 +151,18 @@ function ClassicBanner({
           "--ink": settings.textColor,
           "--radius": settings.radius + "px",
           "--foot-h": foot.height + "px",
+          "--speed": settings.speed / 100,
         } as CSSProperties
       }
     >
+      {settings.showTopline && (
       <div className="banner-topline">
         <span>LEAGUE OF LEGENDS</span>
         <span>
           {settings.queue === "solo" ? "RANKED SOLO / DUO" : "RANKED FLEX"}
         </span>
       </div>
+      )}
       <div className="banner-profile">
         {settings.showIcon && (
           <div className="avatar">

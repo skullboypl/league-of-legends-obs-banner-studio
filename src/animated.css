@@ -297,13 +297,14 @@
   flex-wrap: wrap;
   justify-content: center;
   gap: 6px;
-  max-height: 142px;
+  align-content: flex-start;
+  max-height: 172px;
   overflow: hidden;
 }
 .orbit-chips > div {
   display: grid;
   gap: 3px;
-  padding: 6px 11px;
+  padding: 5px 10px;
   border-radius: 10px;
   background: color-mix(in srgb, var(--ink) 7%, transparent);
   border: 1px solid color-mix(in srgb, var(--ink) 10%, transparent);
@@ -610,4 +611,46 @@
   .hex-progress {
     animation: none;
   }
+}
+
+.orbit-chips .top-champs > span {
+  width: 20px;
+  height: 20px;
+}
+/* Tempo animacji (--speed = ustawienie / 100) i kształt awatara */
+.orbit-spin {
+  animation-duration: calc(24s / var(--speed, 1));
+}
+.mq-track {
+  animation-duration: calc(28s / var(--speed, 1));
+}
+.ab-hex:before {
+  animation-duration: calc(6s / var(--speed, 1));
+}
+.hex-shine {
+  animation-duration: calc(5.5s / var(--speed, 1));
+}
+.shape-square .ab-avatar,
+.shape-square .ab-avatar > img {
+  border-radius: 12px;
+}
+.shape-hex .ab-avatar,
+.shape-hex .ab-avatar > img {
+  border-radius: 0;
+  clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
+}
+.shape-hex .ab-avatar {
+  border: 0;
+  background: var(--accent);
+}
+.shape-hex .ab-avatar > span {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  background: #15161b;
+  clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
+}
+.shape-hex .ab-avatar > small {
+  bottom: 8px;
 }

@@ -2289,3 +2289,54 @@ html.widget #root {
 .dot-amoled {
   background: #000;
 }
+
+/* Tempo animacji i kształt awatara w układach klasycznych */
+.foot-track {
+  animation-duration: calc(16s / var(--speed, 1));
+}
+.player-banner.theme-aurora {
+  animation-duration: calc(14s / var(--speed, 1));
+}
+.shape-square .avatar,
+.shape-square .avatar img {
+  border-radius: 12px;
+}
+.shape-hex .avatar,
+.shape-hex .avatar img {
+  border-radius: 0;
+  clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
+}
+.shape-hex .avatar {
+  border: 0;
+  background: var(--accent);
+}
+.shape-hex .avatar > small,
+.shape-square .avatar > small {
+  z-index: 1;
+}
+.shape-picker {
+  display: flex;
+  gap: 6px;
+  margin: 14px 0 4px;
+  align-items: center;
+}
+.shape-picker > span {
+  font-size: 11px;
+  color: var(--muted);
+  margin-right: auto;
+}
+.shape-picker button.active {
+  background: #29191e;
+  border-color: #4b262e;
+}
+.shape-hex .avatar > span {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  background: #17181e;
+  clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
+}
+.shape-hex .avatar > small {
+  bottom: 9px;
+}

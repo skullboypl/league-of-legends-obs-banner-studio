@@ -17,7 +17,7 @@ function facts(player: PlayerData, settings: BannerSettings) {
     ranked && ["MASTER", "GRANDMASTER", "CHALLENGER"].includes(ranked.tier),
   );
   const recent = player.recent?.games.length ? player.recent : null;
-  const top = player.mastery?.top ?? [];
+  const top = (player.mastery?.top ?? []).slice(0, settings.topCount);
   const pips = recent ? (
     <span className="form-pips" aria-label="Ostatnie gry">
       {[...recent.games].reverse().map((win, index) => (
@@ -49,6 +49,11 @@ function facts(player: PlayerData, settings: BannerSettings) {
     settings.showForm && { key: "form", label: "FORMA", value: pips },
     settings.showKda && { key: "kda", label: "KDA", value: recent ? recent.kda.toFixed(1) : "—" },
     settings.showCs && { key: "cs", label: "CS / MIN", value: recent ? recent.csPerMin.toFixed(1) : "—" },
+    settings.showMastery && {
+      key: "mastery",
+      label: "MASTERY",
+      value: player.mastery ? player.mastery.score.toLocaleString("pl-PL") : "—",
+    },
     settings.showTop && { key: "top", label: "TOP CHAMPIONI", value: champs },
   ].filter(Boolean) as Atom[];
   return {
@@ -90,20 +95,22 @@ function Identity({ player, settings }: Props) {
 function rootProps(settings: BannerSettings, name: string) {
   return {
     className:
-      "anim-banner ab-" + name + " font-" + settings.font + (settings.glow ? " has-glow" : ""),
+      "anim-banner ab-" + name + " shape-" + settings.avatarShape + " font-" + settings.font + (settings.glow ? " has-glow" : ""),
     style: {
       "--accent": settings.accent,
       "--banner-bg":
         settings.background + Math.round(settings.opacity * 2.55).toString(16).padStart(2, "0"),
       "--ink": settings.textColor,
       "--radius": settings.radius + "px",
+      "--speed": settings.speed / 100,
     } as CSSProperties,
   };
 }
 
 /* DECK: stały nagłówek gracza i karta statystyk zmieniająca się sama. */
-const DECK_MS = 4200;
+const DECK_BASE_MS = 4200;
 function Deck({ player, settings }: Props) {
+  const deckMs = DECK_BASE_MS / (settings.speed / 100);
   const f = facts(player, settings);
   const pick = (...keys: string[]) => f.atoms.filter((atom) => keys.includes(atom.key));
   const groups: Atom[][] = [
@@ -111,7 +118,7 @@ function Deck({ player, settings }: Props) {
       ...(settings.showLP ? [{ key: "lp", label: "LP", value: f.lp ?? "—" }] : []),
       ...pick("wr"),
     ],
-    pick("rec", "games"),
+    pick("rec", "games", "mastery"),
     pick("form", "kda", "cs"),
     pick("top"),
   ].filter((group) => group.length);
@@ -119,9 +126,9 @@ function Deck({ player, settings }: Props) {
   const [index, setIndex] = useState(0);
   useEffect(() => {
     if (cards.length < 2) return setIndex(0);
-    const timer = window.setInterval(() => setIndex((value) => (value + 1) % cards.length), DECK_MS);
+    const timer = window.setInterval(() => setIndex((value) => (value + 1) % cards.length), deckMs);
     return () => window.clearInterval(timer);
-  }, [cards.length]);
+  }, [cards.length, deckMs]);
   const current = cards[Math.min(index, cards.length - 1)];
   return (
     <article {...rootProps(settings, "deck")}>
@@ -144,7 +151,7 @@ function Deck({ player, settings }: Props) {
       </div>
       {cards.length > 1 && (
         <>
-          <i className="deck-timer" key={"t" + index} style={{ animationDuration: DECK_MS + "ms" }} />
+          <i className="deck-timer" key={"t" + index} style={{ animationDuration: deckMs + "ms" }} />
           <span className="deck-dots" aria-hidden="true">
             {cards.map((_, dot) => (
               <i key={dot} className={dot === index ? "on" : ""} />

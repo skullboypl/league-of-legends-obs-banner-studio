@@ -292,7 +292,7 @@ export const pages = [
     description:
       'Porównanie 12 układów banera rankingu League of Legends: 8 klasycznych (Prime, Broadcast, Compact, Showcase, Split, Minimal, Tower, Scoreboard) i 4 animowane (Deck, Orbit, Marquee, Hextech) – z wymiarami w pikselach.',
     summary:
-      'Banner Studio ma 12 układów: 8 klasycznych (Prime, Broadcast, Compact, Showcase, Split, Minimal, Tower, Scoreboard) i 4 animowane (Deck, Orbit, Marquee, Hextech). Wymiary przy skali 100% wahają się od 920 × 64 px (Marquee) do 300 × 416 px (Orbit).',
+      'Banner Studio ma 12 układów: 8 klasycznych (Prime, Broadcast, Compact, Showcase, Split, Minimal, Tower, Scoreboard) i 4 animowane (Deck, Orbit, Marquee, Hextech). Wymiary przy skali 100% wahają się od 920 × 64 px (Marquee) do 300 × 448 px (Orbit).',
     sections: [
       {
         id: 'lista',
@@ -379,6 +379,8 @@ export const pages = [
                 ['Skala', '60–160%', '`scale`'],
                 ['Poświata akcentu', 'włączona / wyłączona', '`glow`'],
                 ['Animowana linia akcentu', 'włączona / wyłączona', '`animate`'],
+                ['Tempo animacji', '50–200%', '`speed`'],
+                ['Kształt awatara', '`round`, `square`, `hex`', '`avatarShape`'],
               ],
             },
           },
@@ -441,7 +443,10 @@ export const pages = [
                 ['Forma: W/L z 10 ostatnich gier', '`showForm`', 'wyłączona'],
                 ['KDA z 10 ostatnich gier', '`showKda`', 'wyłączone'],
                 ['CS na minutę', '`showCs`', 'wyłączone'],
-                ['Top 3 championi (mastery)', '`showTop`', 'wyłączeni'],
+                ['Top championi (mastery)', '`showTop`', 'włączeni'],
+                ['Liczba championów (1–3)', '`topCount`', '3'],
+                ['Wynik mastery konta', '`showMastery`', 'wyłączony'],
+                ['Pasek tytułowy (układy klasyczne)', '`showTopline`', 'włączony'],
               ],
             },
           },
@@ -526,6 +531,9 @@ export const pages = [
                 ['`opacity`', '10–100', '96'],
                 ['`radius`', '0–32', '12'],
                 ['`scale`', '60–160', '100'],
+                ['`speed`', 'tempo animacji 50–200', '100'],
+                ['`topCount`', 'liczba top championów 1–3', '3'],
+                ['`avatarShape`', '`round`, `square`, `hex`', '`round`'],
                 ['`glow`', '`1` / `0`', '1'],
                 ['`animate`', '`1` / `0`', '0'],
               ],
@@ -538,7 +546,7 @@ export const pages = [
         title: 'Przełączniki elementów',
         blocks: [
           {
-            p: 'Każdy z poniższych parametrów przyjmuje `1` (pokaż) lub `0` (ukryj): `showIcon`, `showLevel`, `showTag`, `showRegion`, `showRank`, `showLP`, `showWinrate`, `showRecord`, `showGames`, `showProgress`, `showStreak`, `showForm`, `showKda`, `showCs`, `showTop`. Opis elementów: [personalizacja](/docs/personalizacja).',
+            p: 'Każdy z poniższych parametrów przyjmuje `1` (pokaż) lub `0` (ukryj): `showIcon`, `showLevel`, `showTag`, `showRegion`, `showRank`, `showLP`, `showWinrate`, `showRecord`, `showGames`, `showProgress`, `showStreak`, `showForm`, `showKda`, `showCs`, `showTop`, `showMastery`, `showTopline`. Opis elementów: [personalizacja](/docs/personalizacja).',
           },
           { p: 'Starsze parametry `icon`, `record` i `winrate` nadal działają i odpowiadają `showIcon`, `showRecord` i `showWinrate`.' },
         ],
