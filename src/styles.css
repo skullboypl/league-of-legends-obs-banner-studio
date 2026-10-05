@@ -859,6 +859,19 @@ input::placeholder {
   letter-spacing: 1.6px;
   color: #b4c0bb55;
 }
+.demo-note {
+  position: absolute;
+  right: 14px;
+  bottom: 12px;
+  padding: 3px 8px;
+  border: 1px solid #ffffff22;
+  border-radius: 4px;
+  background: #0008;
+  color: #d9c28f;
+  font-size: 8px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
 .scene-footer i {
   margin: 0 9px;
 }

@@ -100,6 +100,16 @@ export function App() {
   const size = dimensions(settings);
   const selected = presets.find((p) => p.id === settings.style)!;
   const currentTab = tabs.find((t) => t.id === tab)!;
+  // Podgląd uzupełnia brakujące dane przykładowymi, aby było widać docelowy wygląd.
+  const needsMastery = settings.showTop && !player.mastery?.top.length;
+  const needsRecent =
+    (settings.showForm || settings.showKda || settings.showCs) &&
+    !player.recent?.games.length;
+  const previewPlayer: PlayerData = {
+    ...player,
+    mastery: needsMastery ? samplePlayer.mastery : player.mastery,
+    recent: needsRecent ? samplePlayer.recent : player.recent,
+  };
   const matched =
     loaded &&
     player.riotId.toLowerCase() === settings.riotId.trim().toLowerCase() &&
@@ -441,7 +451,7 @@ export function App() {
                       >
                         <div className="preset-preview">
                           <BannerFrame
-                            player={player}
+                            player={previewPlayer}
                             maxHeight={50}
                             settings={{
                               ...settings,
@@ -477,7 +487,7 @@ export function App() {
                       >
                         <div className="preset-preview">
                           <BannerFrame
-                            player={player}
+                            player={previewPlayer}
                             maxHeight={50}
                             settings={{
                               ...settings,
@@ -669,7 +679,10 @@ export function App() {
                     <i />
                   </div>
                 )}
-                <BannerFrame player={player} settings={settings} />
+                <BannerFrame player={previewPlayer} settings={settings} />
+                {(needsMastery || needsRecent || !matched) && (
+                  <span className="demo-note">Demo data for preview</span>
+                )}
                 <span className="scene-footer">
                   LEAGUE OF LEGENDS <i>•</i>{" "}
                   {settings.queue === "solo" ? "SOLO / DUO" : "FLEX"}
