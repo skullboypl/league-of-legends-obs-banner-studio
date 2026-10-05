@@ -48,8 +48,6 @@ const paths = {
   star: "m12 3 2.9 5.9 6.5.9-4.7 4.6 1.1 6.5L12 17.8 6.2 20.9l1.1-6.5L2.6 9.8l6.5-.9L12 3Z",
   heading: "M4 7V5h16v2M12 5v14m-3 0h6",
   home: "M3 11 12 3l9 8v10h-6v-6H9v6H3z",
-  menu: "M4 7h16M4 12h16M4 17h16",
-  close: "M6 6l12 12M18 6 6 18",
   github:
     "M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22",
 };
@@ -215,7 +213,6 @@ export function App() {
   const [exportOpen, setExportOpen] = useState(false);
   const demoDialog = useRef<HTMLDialogElement>(null);
   const [demo, setDemo] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
   const frameHost = useRef<HTMLDivElement>(null);
   const [frameRoom, setFrameRoom] = useState(0);
   const request = useRef<AbortController>();
@@ -431,7 +428,7 @@ export function App() {
   );
   return (
     <div className="studio">
-      <aside className="sidebar" data-menu={menuOpen ? "open" : "closed"}>
+      <aside className="sidebar">
         <a href="/" className="brand">
           <span className="brand-mark">
             <Icon name="layers" />
@@ -440,15 +437,6 @@ export function App() {
             Banner<small>STUDIO / LEAGUE</small>
           </span>
         </a>
-        <button
-          className="menu-toggle"
-          aria-expanded={menuOpen}
-          aria-controls="side-extra"
-          onClick={() => setMenuOpen((open) => !open)}
-        >
-          <Icon name={menuOpen ? "close" : "menu"} />
-          <span>{tl("Menu")}</span>
-        </button>
         <div className="workspace-label">{tl("TWÓJ WARSZTAT")}</div>
         <nav aria-label={tl("Ustawienia banera")}>
           {tabs.map((t) => (
@@ -482,19 +470,19 @@ export function App() {
             <span>{tl("Dokumentacja")}</span>
             <span className="nav-arrow">›</span>
           </a>
-          <div className="sidebar-lang" role="group" aria-label={tl("Język")}>
-            {languageOrder.map((id) => (
-              <button
-                key={id}
-                aria-pressed={settings.lang === id}
-                title={tl(languageName[id])}
-                onClick={() => update("lang", id)}
-              >
-                <Flag id={id} />
-                <span>{tl(languageName[id])}</span>
-              </button>
-            ))}
-          </div>
+        </div>
+        <div className="sidebar-lang" role="group" aria-label={tl("Język")}>
+          {languageOrder.map((id) => (
+            <button
+              key={id}
+              aria-pressed={settings.lang === id}
+              title={tl(languageName[id])}
+              onClick={() => update("lang", id)}
+            >
+              <Flag id={id} />
+              <span>{tl(languageName[id])}</span>
+            </button>
+          ))}
         </div>
         </div>
         <div className="sidebar-bottom">
@@ -985,6 +973,34 @@ export function App() {
           </p>
         </footer>
       </div>
+      <nav className="bottom-bar" aria-label={tl("Ustawienia banera")}>
+        {tabs.map((t) => (
+          <button
+            key={t.id}
+            className={tab === t.id ? "active" : ""}
+            aria-current={tab === t.id ? "page" : undefined}
+            onClick={() => {
+              setTab(t.id);
+              window.scrollTo({ top: 0 });
+            }}
+          >
+            <Icon name={t.icon} />
+            <span>{tl(t.name)}</span>
+          </button>
+        ))}
+        <a className="bb-docs" href="/docs">
+          <Icon name="book" />
+          <span>{tl("Dokumentacja")}</span>
+        </a>
+        <a
+          className="bb-hub"
+          href="https://vxh.pl/"
+          aria-label={tl("Wróć do Visual eXtras Hub")}
+          title={tl("Wróć do Visual eXtras Hub")}
+        >
+          <Icon name="home" />
+        </a>
+      </nav>
       {notice && (
         <div className="toast" role="status">
           {notice}
