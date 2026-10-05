@@ -2363,3 +2363,258 @@ html.widget #root {
   background: radial-gradient(circle at 60% 40%, #c89b3c, #3a2a10 70%);
   filter: blur(0.6px);
 }
+
+/* ---- Dodatkowe układy klasyczne ---- */
+.banner-slim {
+  padding: 0 22px;
+  gap: 16px;
+}
+.banner-slim .banner-topline {
+  display: none;
+}
+.banner-slim .avatar {
+  width: 44px;
+  height: 44px;
+  padding: 2px;
+}
+.banner-slim .avatar small {
+  display: none;
+}
+.banner-slim .identity h2 {
+  font-size: 18px;
+}
+.banner-slim .banner-rank .rank-emblem {
+  width: 32px;
+  height: 38px;
+}
+.banner-slim .banner-rank strong {
+  font-size: 22px;
+}
+.banner-slim .banner-rank > div {
+  gap: 3px;
+}
+.banner-slim .banner-rank > div > span {
+  font-size: 8px;
+}
+.banner-slim .banner-stats {
+  gap: 14px;
+  padding-left: 14px;
+}
+.banner-slim .banner-stats strong {
+  font-size: 14px;
+}
+.banner-slim .lp-track {
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  border-radius: 0;
+}
+.banner-wide {
+  padding: 28px 32px 16px;
+  gap: 36px;
+}
+.banner-wide .banner-topline {
+  top: 9px;
+  left: 32px;
+  right: 32px;
+}
+.banner-wide .avatar {
+  width: 52px;
+  height: 52px;
+}
+.banner-wide .banner-rank .rank-emblem {
+  width: 42px;
+  height: 48px;
+}
+.banner-wide .banner-rank strong {
+  font-size: 32px;
+}
+.banner-wide .banner-stats {
+  gap: 44px;
+  padding-left: 36px;
+}
+.banner-wide .banner-stats strong {
+  font-size: 22px;
+}
+.banner-wide .lp-track {
+  left: 32px;
+  right: 32px;
+  bottom: 6px;
+}
+.banner-info {
+  display: grid;
+  grid-template-columns: 1fr;
+  align-content: center;
+  gap: 14px;
+  padding: 40px 24px 26px;
+}
+.banner-info .banner-profile {
+  flex: none;
+}
+.banner-info .banner-rank {
+  justify-content: flex-start;
+}
+.banner-info .banner-rank .rank-emblem {
+  width: 54px;
+  height: 62px;
+}
+.banner-info .banner-rank strong {
+  font-size: 38px;
+}
+.banner-info .banner-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 20px;
+  border-left: 0;
+  border-top: 1px solid #ffffff15;
+  padding: 14px 0 0;
+}
+.banner-info .lp-track {
+  left: 24px;
+  right: 24px;
+  bottom: 10px;
+}
+.player-banner.banner-stripe {
+  border: 0;
+  border-radius: 0;
+  clip-path: polygon(26px 0, 100% 0, calc(100% - 26px) 100%, 0 100%);
+  padding: 14px 64px;
+  gap: 26px;
+  box-shadow: inset 0 -3px 0 var(--accent);
+}
+.banner-stripe:before {
+  width: 34px;
+  background: linear-gradient(100deg, var(--accent) 0 38%, transparent 38%);
+}
+.banner-stripe .banner-topline {
+  display: none;
+}
+.banner-stripe .avatar {
+  width: 54px;
+  height: 54px;
+}
+.banner-stripe .banner-rank .rank-emblem {
+  width: 44px;
+  height: 50px;
+}
+.banner-stripe .banner-rank strong {
+  font-size: 30px;
+}
+.banner-stripe .banner-stats {
+  gap: 24px;
+  padding-left: 24px;
+}
+.banner-stripe .lp-track {
+  left: 64px;
+  right: 64px;
+  bottom: 8px;
+  height: 2px;
+}
+.banner-badge {
+  flex-direction: column;
+  justify-content: center;
+  gap: 12px;
+  padding: 24px 20px 20px;
+  text-align: center;
+}
+.banner-badge .banner-topline {
+  display: none;
+}
+.banner-badge .banner-rank {
+  order: -1;
+  flex-direction: column;
+  gap: 6px;
+}
+.banner-badge .banner-rank .rank-emblem {
+  width: 72px;
+  height: 82px;
+}
+.banner-badge .banner-rank > div {
+  justify-items: center;
+}
+.banner-badge .banner-rank strong {
+  font-size: 38px;
+}
+.banner-badge .banner-profile {
+  flex: none;
+  flex-direction: column;
+  gap: 8px;
+}
+.banner-badge .avatar {
+  width: 44px;
+  height: 44px;
+}
+.banner-badge .identity > div {
+  justify-content: center;
+}
+.banner-badge .banner-stats {
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  border-left: 0;
+  border-top: 1px solid #ffffff15;
+  padding: 12px 0 0;
+}
+.banner-badge .banner-stats > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.banner-badge .lp-track {
+  left: 20px;
+  right: 20px;
+  bottom: 10px;
+}
+.banner-ticket {
+  padding: 30px 0 18px 26px;
+  gap: 22px;
+  -webkit-mask:
+    radial-gradient(circle 9px at calc(100% - 172px) 0, #0000 97%, #000),
+    radial-gradient(circle 9px at calc(100% - 172px) 100%, #0000 97%, #000);
+  -webkit-mask-composite: source-in;
+  mask:
+    radial-gradient(circle 9px at calc(100% - 172px) 0, #0000 97%, #000),
+    radial-gradient(circle 9px at calc(100% - 172px) 100%, #0000 97%, #000);
+  mask-composite: intersect;
+}
+.banner-ticket .banner-topline {
+  right: 196px;
+}
+.banner-ticket .banner-profile {
+  order: 1;
+}
+.banner-ticket .banner-stats {
+  order: 2;
+  border-left: 0;
+  padding-left: 0;
+}
+.banner-ticket .banner-rank {
+  order: 3;
+  align-self: stretch;
+  width: 172px;
+  margin: -30px 0 -18px;
+  padding: 30px 14px 18px;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  border-left: 2px dashed color-mix(in srgb, var(--ink) 28%, transparent);
+}
+.banner-ticket .banner-rank .rank-emblem {
+  width: 46px;
+  height: 52px;
+}
+.banner-ticket .banner-rank > div {
+  justify-items: center;
+}
+.banner-ticket .lp-track {
+  left: 26px;
+  right: 196px;
+}
+.player-banner.banner-stripe.with-foot {
+  padding-bottom: calc(var(--foot-h) + 10px);
+}
+.banner-ticket.with-foot .banner-rank {
+  margin-bottom: -10px;
+  padding-bottom: 10px;
+}

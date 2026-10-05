@@ -9,7 +9,7 @@ The project is an independent community tool inspired by the workflow of FACEIT 
 - Riot ID lookup, including profile icon and summoner level.
 - Ranked Solo/Duo and Ranked Flex data.
 - Rank, League Points, win rate, wins, losses, total games and LP progress.
-- Sixteen banner layouts: eight classic (Prime, Broadcast, Compact, Showcase, Split, Minimal, Tower, Scoreboard) and eight animated (Deck, Orbit, Marquee, Hextech, Tabs, Radar, Flip, Ladder), plus seven themes for the classic layouts.
+- Twenty-two banner layouts: fourteen classic (Prime, Broadcast, Compact, Showcase, Split, Minimal, Tower, Scoreboard, Slim, Wide, Info, Stripe, Badge, Ticket) and eight animated (Deck, Orbit, Marquee, Hextech, Tabs, Radar, Flip, Ladder), plus seven themes for the classic layouts.
 - Riot-inspired themes, custom colors, three fonts, opacity, radius, scale, glow and animation controls.
 - Individual visibility switches for profile and ranked information.
 - Live Studio preview, local settings, settings import/share and OBS export dialog.

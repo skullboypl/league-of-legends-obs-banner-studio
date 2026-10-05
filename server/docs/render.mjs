@@ -443,7 +443,7 @@ export function llmsTxt(site) {
     '',
     'Kluczowe fakty:',
     '',
-    '- 16 układów banera: 8 klasycznych (Prime, Broadcast, Compact, Showcase, Split, Minimal, Tower, Scoreboard) i 8 animowanych (Deck, Orbit, Marquee, Hextech, Tabs, Radar, Flip, Ladder).',
+    '- 22 układy banera: 14 klasycznych (Prime, Broadcast, Compact, Showcase, Split, Minimal, Tower, Scoreboard, Slim, Wide, Info, Stripe, Badge, Ticket) i 8 animowanych (Deck, Orbit, Marquee, Hextech, Tabs, Radar, Flip, Ladder).',
     '- Obsługa 16 serwerów LoL i kolejek Ranked Solo/Duo oraz Ranked Flex.',
     '- Widżet odświeża dane co 2 minuty; adres to /widget z parametrami w zapytaniu.',
     '- Klucz Riot API pozostaje na serwerze i nie trafia do przeglądarki ani do linku.',
