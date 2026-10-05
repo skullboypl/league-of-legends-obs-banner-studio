@@ -51,6 +51,7 @@ Projekt **nie jest powiązany** z Riot Games. Korzysta z oficjalnego Riot API pr
 - **17 przełączników elementów** z ikonami, m.in. ikona, poziom, tag, serwer, ranga, LP, win rate, bilans, forma, KDA, CS, top championi.
 - **16 serwerów LoL** i dwie kolejki rankingowe.
 - **Podgląd na żywo** w Studio na kilku scenach, z danymi demo, gdy Riot jeszcze ich nie zwrócił, oraz podgląd z iframe w oknie „Generuj link OBS”.
+- **Trzy języki Studio i banerów**: polski, angielski i niemiecki. Przełącznik z flagami w menu, automatyczne wykrywanie języka przeglądarki, język w linku widżetu (`lang=pl|en|de`), tłumaczone etykiety banerów i komunikaty błędów. Dokumentacja `/docs` jest na razie po polsku.
 - **Samoodświeżanie**: Studio i widżet wykrywają nową wersję i same się przeładowują.
 - **Dokumentacja SSR** w `/docs` z SEO, AEO i GEO (`sitemap.xml`, `llms.txt`, dane strukturalne JSON-LD).
 

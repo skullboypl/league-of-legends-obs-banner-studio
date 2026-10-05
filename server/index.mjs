@@ -15,6 +15,30 @@ const platformToRegion = {
   oc1: 'sea', ph2: 'sea', sg2: 'sea', th2: 'sea', tw2: 'sea', vn2: 'sea',
 };
 const cache = new Map();
+// Komunikaty błędów w językach Studio (klucz: wersja polska).
+const messages = {
+  en: {
+    'Za dużo zapytań. Spróbuj ponownie za minutę.': 'Too many requests. Try again in a minute.',
+    'Serwer nie ma skonfigurowanego klucza RIOT_API_KEY.': 'The server has no RIOT_API_KEY configured.',
+    'Podaj poprawny Riot ID i obsługiwany region.': 'Enter a valid Riot ID and a supported region.',
+    'Klucz Riot API jest nieprawidłowy lub wygasł.': 'The Riot API key is invalid or has expired.',
+    'Riot API odrzuciło klucz. Klucze deweloperskie wygasają co 24 godziny.': 'Riot API rejected the key. Development keys expire every 24 hours.',
+    'Nie znaleziono gracza o takim Riot ID w wybranym regionie.': 'No player with this Riot ID was found in the selected region.',
+    'Limit Riot API został chwilowo wyczerpany.': 'The Riot API limit has been reached for now.',
+    'Nie udało się pobrać danych z Riot API.': 'Could not fetch data from the Riot API.',
+  },
+  de: {
+    'Za dużo zapytań. Spróbuj ponownie za minutę.': 'Zu viele Anfragen. Versuche es in einer Minute erneut.',
+    'Serwer nie ma skonfigurowanego klucza RIOT_API_KEY.': 'Auf dem Server ist kein RIOT_API_KEY konfiguriert.',
+    'Podaj poprawny Riot ID i obsługiwany region.': 'Gib eine gültige Riot-ID und eine unterstützte Region an.',
+    'Klucz Riot API jest nieprawidłowy lub wygasł.': 'Der Riot-API-Schlüssel ist ungültig oder abgelaufen.',
+    'Riot API odrzuciło klucz. Klucze deweloperskie wygasają co 24 godziny.': 'Die Riot-API hat den Schlüssel abgelehnt. Entwicklungsschlüssel laufen alle 24 Stunden ab.',
+    'Nie znaleziono gracza o takim Riot ID w wybranym regionie.': 'Kein Spieler mit dieser Riot-ID in der gewählten Region gefunden.',
+    'Limit Riot API został chwilowo wyczerpany.': 'Das Riot-API-Limit ist vorübergehend erreicht.',
+    'Nie udało się pobrać danych z Riot API.': 'Daten konnten nicht von der Riot-API abgerufen werden.',
+  },
+};
+const translate = (lang, text) => messages[lang]?.[text] || text;
 const matchCache = new Map();
 const queueIds = { solo: 420, flex: 440 };
 let championIndex = { version: '', byId: new Map(), expiresAt: 0 };
@@ -138,11 +162,12 @@ app.get('/riot.txt', (_request, response) => {
 });
 
 app.get('/api/player', async (request, response) => {
+  const lang = ['en', 'de'].includes(request.query.lang) ? request.query.lang : 'pl';
   if (!allowRequest(request.ip || 'unknown')) {
-    return response.status(429).json({ error: 'Za dużo zapytań. Spróbuj ponownie za minutę.' });
+    return response.status(429).json({ error: translate(lang, 'Za dużo zapytań. Spróbuj ponownie za minutę.') });
   }
   if (!apiKey) {
-    return response.status(503).json({ error: 'Serwer nie ma skonfigurowanego klucza RIOT_API_KEY.' });
+    return response.status(503).json({ error: translate(lang, 'Serwer nie ma skonfigurowanego klucza RIOT_API_KEY.') });
   }
 
   const gameName = String(request.query.gameName || '').trim();
@@ -151,7 +176,7 @@ app.get('/api/player', async (request, response) => {
   const region = platformToRegion[platform];
   const queue = request.query.queue === 'flex' ? 'flex' : 'solo';
   if (!gameName || !tagLine || !region) {
-    return response.status(400).json({ error: 'Podaj poprawny Riot ID i obsługiwany region.' });
+    return response.status(400).json({ error: translate(lang, 'Podaj poprawny Riot ID i obsługiwany region.') });
   }
 
   const cacheKey = `${platform}:${gameName.toLowerCase()}#${tagLine.toLowerCase()}:${queue}`;
@@ -208,13 +233,13 @@ app.get('/api/player', async (request, response) => {
     return response.json(value);
   } catch (error) {
     const status = Number(error.status) || 502;
-    const messages = {
+    const errorMessages = {
       401: 'Klucz Riot API jest nieprawidłowy lub wygasł.',
       403: 'Riot API odrzuciło klucz. Klucze deweloperskie wygasają co 24 godziny.',
       404: 'Nie znaleziono gracza o takim Riot ID w wybranym regionie.',
       429: 'Limit Riot API został chwilowo wyczerpany.',
     };
-    return response.status(status).json({ error: messages[status] || 'Nie udało się pobrać danych z Riot API.' });
+    return response.status(status).json({ error: translate(lang, errorMessages[status] || 'Nie udało się pobrać danych z Riot API.') });
   }
 });
 

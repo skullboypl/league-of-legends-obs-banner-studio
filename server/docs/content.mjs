@@ -565,6 +565,7 @@ export const pages = [
                 ['`speed`', 'tempo animacji 50–200', '100'],
                 ['`topCount`', 'liczba top championów 1–3', '3'],
                 ['`avatarShape`', '`round`, `square`, `hex`', '`round`'],
+                ['`lang`', 'język etykiet banera i komunikatów: `pl`, `en`, `de`', '`pl`'],
                 ['`glow`', '`1` / `0`', '1'],
                 ['`animate`', '`1` / `0`', '0'],
               ],

@@ -1,6 +1,7 @@
 import { FormEvent, ReactNode, useEffect, useRef, useState } from "react";
 import { fetchPlayer, parseRiotId } from "./api";
 import { watchForUpdates } from "./updates";
+import { languages, tr } from "./i18n";
 import { defaultSettings, platforms, samplePlayer } from "./data";
 import { BannerFrame, RankEmblem } from "./PlayerBanner";
 import {
@@ -82,6 +83,34 @@ function Icon({ name }: { name: keyof typeof paths }) {
       aria-hidden="true"
     >
       <path d={paths[name]} />
+    </svg>
+  );
+}
+function Flag({ id }: { id: string }) {
+  return (
+    <svg className="flag" viewBox="0 0 60 40" aria-hidden="true">
+      {id === "pl" && (
+        <>
+          <rect width="60" height="20" fill="#f4f4f4" />
+          <rect y="20" width="60" height="20" fill="#dc143c" />
+        </>
+      )}
+      {id === "de" && (
+        <>
+          <rect width="60" height="13.4" fill="#111" />
+          <rect y="13.3" width="60" height="13.4" fill="#dd0000" />
+          <rect y="26.6" width="60" height="13.4" fill="#ffce00" />
+        </>
+      )}
+      {id === "en" && (
+        <>
+          <rect width="60" height="40" fill="#012169" />
+          <path d="M0 0l60 40M60 0L0 40" stroke="#fff" strokeWidth="8" />
+          <path d="M0 0l60 40M60 0L0 40" stroke="#c8102e" strokeWidth="3" />
+          <path d="M30 0v40M0 20h60" stroke="#fff" strokeWidth="12" />
+          <path d="M30 0v40M0 20h60" stroke="#c8102e" strokeWidth="7" />
+        </>
+      )}
     </svg>
   );
 }
@@ -181,6 +210,8 @@ export function App() {
   const frameHost = useRef<HTMLDivElement>(null);
   const [frameRoom, setFrameRoom] = useState(0);
   const request = useRef<AbortController>();
+  const tl = (pl: string, ...args: (string | number)[]) =>
+    tr(settings.lang, pl, ...args);
   const size = dimensions(settings);
   const selected = presets.find((p) => p.id === settings.style)!;
   const currentTab = tabs.find((t) => t.id === tab)!;
@@ -198,6 +229,9 @@ export function App() {
     loaded &&
     player.riotId.toLowerCase() === settings.riotId.trim().toLowerCase() &&
     player.platform === settings.platform;
+  useEffect(() => {
+    document.documentElement.lang = settings.lang;
+  }, [settings.lang]);
   useEffect(() => {
     try {
       localStorage.setItem("lol-studio-v2", JSON.stringify(settings));
@@ -248,7 +282,7 @@ export function App() {
   useEffect(
     () =>
       watchForUpdates(() => {
-        setNotice("Wykryto nową wersję – odświeżam…");
+        setNotice(tr(settings.lang, "Wykryto nową wersję – odświeżam…"));
         window.setTimeout(() => location.reload(), 2500);
       }),
     [],
@@ -276,6 +310,7 @@ export function App() {
         settings.riotId,
         settings.platform,
         settings.queue,
+        settings.lang,
         controller.signal,
       );
       setPlayer(data);
@@ -285,19 +320,19 @@ export function App() {
         setError(
           reason instanceof Error
             ? reason.message
-            : "Nie udało się pobrać danych.",
+            : tl("Nie udało się pobrać danych."),
         );
     } finally {
       if (!controller.signal.aborted) setLoading(false);
     }
   }
-  async function copy(value: string, label = "Skopiowano do schowka") {
+  async function copy(value: string, label = tl("Skopiowano do schowka")) {
     try {
       await navigator.clipboard.writeText(value);
       setNotice(label);
     } catch {
       setNotice(
-        "Schowek jest niedostępny. Zaznacz i skopiuj adres z okna eksportu.",
+        tl("Schowek jest niedostępny. Zaznacz i skopiuj adres z okna eksportu."),
       );
     }
   }
@@ -305,18 +340,21 @@ export function App() {
     try {
       const url = new URL(importValue);
       if (!url.searchParams.has("riotId")) throw new Error();
-      setSettings(settingsFromUrl(url.search));
+      setSettings((current) => ({
+        ...settingsFromUrl(url.search),
+        lang: url.searchParams.has("lang") ? settingsFromUrl(url.search).lang : current.lang,
+      }));
       setNotice(
-        "Wczytano ustawienia. Pobierz dane gracza, aby odświeżyć profil.",
+        tl("Wczytano ustawienia. Pobierz dane gracza, aby odświeżyć profil."),
       );
       setImportValue("");
     } catch {
-      setNotice("Wklej pełny link do Studio lub widżetu zawierający Riot ID.");
+      setNotice(tl("Wklej pełny link do Studio lub widżetu zawierający Riot ID."));
     }
   }
   function openExport() {
     if (!parseRiotId(settings.riotId)) {
-      setError("Wpisz Riot ID w formacie Nazwa#TAG.");
+      setError(tl("Wpisz Riot ID w formacie Nazwa#TAG."));
       setTab("player");
       return;
     }
@@ -356,7 +394,7 @@ export function App() {
   ) => (
     <label className="range-row">
       <span>
-        {label}
+        {tl(label)}
         <b>
           {settings[key]}
           {suffix}
@@ -373,7 +411,7 @@ export function App() {
   );
   const toggle = (key: "glow" | "animate", label: string) => (
     <label className="toggle">
-      <span>{label}</span>
+      <span>{tl(label)}</span>
       <input
         type="checkbox"
         checked={settings[key]}
@@ -393,36 +431,49 @@ export function App() {
             Banner<small>STUDIO / LEAGUE</small>
           </span>
         </a>
-        <div className="workspace-label">TWÓJ WARSZTAT</div>
-        <nav aria-label="Ustawienia banera">
+        <div className="workspace-label">{tl("TWÓJ WARSZTAT")}</div>
+        <nav aria-label={tl("Ustawienia banera")}>
           {tabs.map((t) => (
             <button
               key={t.id}
               className={tab === t.id ? "active" : ""}
               aria-current={tab === t.id ? "page" : undefined}
-              aria-label={t.name}
+              aria-label={tl(t.name)}
               onClick={() => setTab(t.id)}
             >
               <Icon name={t.icon} />
-              <span>{t.name}</span>
+              <span>{tl(t.name)}</span>
               <span className="nav-arrow">›</span>
             </button>
           ))}
         </nav>
-        <div className="docs-nav" role="navigation" aria-label="Dokumentacja">
+        <div className="sidebar-lang" role="group" aria-label={tl("Język")}>
+          {languages.map((entry) => (
+            <button
+              key={entry.id}
+              aria-pressed={settings.lang === entry.id}
+              title={entry.label}
+              onClick={() => update("lang", entry.id)}
+            >
+              <Flag id={entry.id} />
+              <span>{entry.id.toUpperCase()}</span>
+            </button>
+          ))}
+        </div>
+        <div className="docs-nav" role="navigation" aria-label={tl("Dokumentacja")}>
           <a href="https://vxh.pl/" className="hub-link">
             <Icon name="home" />
-            <span>Wróć do Visual eXtras Hub</span>
+            <span>{tl("Wróć do Visual eXtras Hub")}</span>
             <span className="nav-arrow">›</span>
           </a>
           <a href="/docs/obs-studio">
             <Icon name="monitor" />
-            <span>Instrukcja OBS</span>
+            <span>{tl("Instrukcja OBS")}</span>
             <span className="nav-arrow">›</span>
           </a>
           <a href="/docs">
             <Icon name="book" />
-            <span>Dokumentacja</span>
+            <span>{tl("Dokumentacja")}</span>
             <span className="nav-arrow">›</span>
           </a>
         </div>
@@ -436,19 +487,19 @@ export function App() {
             </span>
           </div>
           <p>
-            Twoja ranga.
+            {tl("Twoja ranga.")}
             <br />
-            Twój styl. Twój stream.
+            {tl("Twój styl. Twój stream.")}
           </p>
           <small>
-            Stworzone przez Skull <span>↗</span>
+            {tl("Stworzone przez Skull")} <span>↗</span>
           </small>
         </div>
       </aside>
       <div className="workspace">
         <header className="topbar">
           <span>
-            Warsztat <i>/</i> <b>{currentTab.name}</b>
+            {tl("Warsztat")} <i>/</i> <b>{tl(currentTab.name)}</b>
           </span>
           <span>
             {demo && (
@@ -456,7 +507,7 @@ export function App() {
                 className="demo-badge"
                 onClick={() => demoDialog.current?.showModal()}
               >
-                Wersja demonstracyjna
+                {tl("Wersja demonstracyjna")}
               </button>
             )}
             <Icon name="monitor" /> OBS & STREAMLABS{" "}
@@ -469,9 +520,9 @@ export function App() {
               LEAGUE OF LEGENDS <span>/</span> BANNER STUDIO
             </p>
             <h1>
-              Twoja ranga. Na Twoim streamie<span>.</span>
+              {tl("Twoja ranga. Na Twoim streamie")}<span>.</span>
             </h1>
-            <p>Ustaw profil, dopasuj baner i przenieś go prosto do OBS.</p>
+            <p>{tl("Ustaw profil, dopasuj baner i przenieś go prosto do OBS.")}</p>
           </div>
           <span className="heading-emblem">
             <RankEmblem />
@@ -480,28 +531,28 @@ export function App() {
         <main className="studio-main">
           <div className="controls">
             <div className="section-label">
-              <h2>{currentTab.name}</h2>
+              <h2>{tl(currentTab.name)}</h2>
               <span>
-                Zapis automatyczny <i className="status-dot" />
+                {tl("Zapis automatyczny")} <i className="status-dot" />
               </span>
             </div>
             {tab === "player" && (
               <>
-                <Card title="Profil gracza" note="RIOT ID">
+                <Card title={tl("Profil gracza")} note="RIOT ID">
                   <form onSubmit={loadPlayer}>
                     <label>
                       Riot ID
                       <input
                         value={settings.riotId}
                         onChange={(e) => update("riotId", e.target.value)}
-                        placeholder="Nazwa#TAG"
+                        placeholder={tl("Nazwa#TAG")}
                         required
                       />
                     </label>
-                    <p className="hint">Nazwa i tag z Twojego konta Riot.</p>
+                    <p className="hint">{tl("Nazwa i tag z Twojego konta Riot.")}</p>
                     <div className="field-pair">
                       <label>
-                        Serwer
+                        {tl("Serwer")}
                         <select
                           value={settings.platform}
                           onChange={(e) => update("platform", e.target.value)}
@@ -514,7 +565,7 @@ export function App() {
                         </select>
                       </label>
                       <label>
-                        Kolejka
+                        {tl("Kolejka")}
                         <select
                           value={settings.queue}
                           onChange={(e) =>
@@ -528,7 +579,7 @@ export function App() {
                     </div>
                     <button className="load-button" disabled={loading}>
                       <Icon name="arrow" />
-                      {loading ? "Pobieranie…" : "Pobierz dane gracza"}
+                      {loading ? tl("Pobieranie…") : tl("Pobierz dane gracza")}
                     </button>
                     {error && (
                       <p className="error" role="alert">
@@ -547,8 +598,8 @@ export function App() {
                     <div>
                       <strong>{player.riotId}</strong>
                       <small>
-                        {matched ? "Profil połączony" : "Podgląd przykładowy"} ·
-                        poziom {player.summonerLevel}
+                        {matched ? tl("Profil połączony") : tl("Podgląd przykładowy")} ·{" "}
+                        {tl("poziom {0}", player.summonerLevel)}
                       </small>
                     </div>
                     <span className={matched ? "connected" : "demo"}>
@@ -556,7 +607,7 @@ export function App() {
                     </span>
                   </div>
                 </Card>
-                <Card title="Wygląd banera" note={presets.length + " UKŁADÓW"}>
+                <Card title={tl("Wygląd banera")} note={tl("{0} UKŁADÓW", presets.length)}>
                   <button
                     className="selected-layout"
                     onClick={() => setTab("style")}
@@ -568,15 +619,15 @@ export function App() {
                     </span>
                     <span>
                       <strong>{selected.name}</strong>
-                      <small>{selected.note}</small>
+                      <small>{tl(selected.note)}</small>
                     </span>
                     <Icon name="arrow" />
                   </button>
                   <p className="hint">
-                    Wybierz układ, paletę i dopasuj detale do swojego streamu.
+                    {tl("Wybierz układ, paletę i dopasuj detale do swojego streamu.")}
                   </p>
                 </Card>
-                <Card title="Rozmiar źródła" note="OBS">
+                <Card title={tl("Rozmiar źródła")} note="OBS">
                   {range("scale", "Skala banera", 60, 160, "%")}
                   <div className="size-readout">
                     <span>
@@ -584,7 +635,7 @@ export function App() {
                       <small>px</small>
                     </span>
                     <button onClick={() => update("scale", 100)}>
-                      Zalecany
+                      {tl("Zalecany")}
                     </button>
                   </div>
                 </Card>
@@ -592,51 +643,49 @@ export function App() {
             )}
             {tab === "style" && (
               <>
-                <Card title="Wybierz układ" note="LEAGUE COLLECTION">
+                <Card title={tl("Wybierz układ")} note="LEAGUE COLLECTION">
                   <div className="preset-grid">
                     {presets.filter((p) => !p.animated).map(presetButton)}
                   </div>
                 </Card>
-                <Card title="Animowane banery" note="INNY WYGLĄD">
+                <Card title={tl("Animowane banery")} note={tl("INNY WYGLĄD")}>
                   <p className="hint">
-                    Osobne banery z własną budową i ruchem. Motywy ich nie
-                    dotyczą, ale kolory, krój pisma i widoczne elementy tak.
+                    {tl("Osobne banery z własną budową i ruchem. Motywy ich nie dotyczą, ale kolory, krój pisma i widoczne elementy tak.")}
                   </p>
                   <div className="preset-grid">
                     {presets.filter((p) => p.animated).map(presetButton)}
                   </div>
                 </Card>
-                <Card title="Motyw banera" note="UKŁADY KLASYCZNE">
+                <Card title={tl("Motyw banera")} note={tl("UKŁADY KLASYCZNE")}>
                   <div
                     className={
                       "theme-chips" + (animatedSelected ? " disabled" : "")
                     }
                     role="radiogroup"
-                    aria-label="Motyw banera"
+                    aria-label={tl("Motyw banera")}
                   >
-                    {themes.map((t) => (
+                    {themes.map((th) => (
                       <button
-                        key={t.id}
+                        key={th.id}
                         role="radio"
-                        aria-checked={settings.theme === t.id}
+                        aria-checked={settings.theme === th.id}
                         disabled={animatedSelected}
-                        className={settings.theme === t.id ? "active" : ""}
-                        title={t.note}
-                        onClick={() => update("theme", t.id)}
+                        className={settings.theme === th.id ? "active" : ""}
+                        title={tl(th.note)}
+                        onClick={() => update("theme", th.id)}
                       >
-                        <i className={"theme-dot dot-" + t.id} />
-                        {t.name}
+                        <i className={"theme-dot dot-" + th.id} />
+                        {th.name}
                       </button>
                     ))}
                   </div>
                   {animatedSelected && (
                     <p className="hint">
-                      Wybrany baner animowany ma własny wygląd. Wybierz układ
-                      klasyczny, aby użyć motywów.
+                      {tl("Wybrany baner animowany ma własny wygląd. Wybierz układ klasyczny, aby użyć motywów.")}
                     </p>
                   )}
                 </Card>
-                <Card title="Kolor i wykończenie">
+                <Card title={tl("Kolor i wykończenie")}>
                   <div className="swatches">
                     {[
                       ["Hextech", "#c89b3c"],
@@ -666,7 +715,7 @@ export function App() {
                     ] as const
                   ).map(([key, label]) => (
                     <label className="color-row" key={key}>
-                      <span>{label}</span>
+                      <span>{tl(label)}</span>
                       <code>{settings[key]}</code>
                       <input
                         type="color"
@@ -676,26 +725,26 @@ export function App() {
                     </label>
                   ))}
                   <label className="font-select">
-                    Krój pisma
+                    {tl("Krój pisma")}
                     <select
                       value={settings.font}
                       onChange={(e) =>
                         update("font", e.target.value as BannerSettings["font"])
                       }
                     >
-                      <option value="sans">Inter · nowoczesny</option>
+                      <option value="sans">{tl("Inter · nowoczesny")}</option>
                       <option value="condensed">
-                        Barlow Condensed · esport
+                        {tl("Barlow Condensed · esport")}
                       </option>
-                      <option value="mono">Monospace · techniczny</option>
+                      <option value="mono">{tl("Monospace · techniczny")}</option>
                     </select>
                   </label>
                   {range("radius", "Zaokrąglenie", 0, 32, " px")}
                   {range("opacity", "Krycie tła", 10, 100, "%")}
                   {range("scale", "Skala", 60, 160, "%")}
                   {range("speed", "Tempo animacji", 50, 200, "%")}
-                  <div className="shape-picker" role="radiogroup" aria-label="Kształt awatara">
-                    <span>Kształt awatara</span>
+                  <div className="shape-picker" role="radiogroup" aria-label={tl("Kształt awatara")}>
+                    <span>{tl("Kształt awatara")}</span>
                     {avatarShapes.map(([id, name]) => (
                       <button
                         key={id}
@@ -704,7 +753,7 @@ export function App() {
                         className={settings.avatarShape === id ? "active" : ""}
                         onClick={() => update("avatarShape", id)}
                       >
-                        {name}
+                        {tl(name)}
                       </button>
                     ))}
                   </div>
@@ -714,10 +763,9 @@ export function App() {
               </>
             )}
             {tab === "stats" && (
-              <Card title="Elementy na banerze" note="WIDOCZNOŚĆ">
+              <Card title={tl("Elementy na banerze")} note={tl("WIDOCZNOŚĆ")}>
                 <p className="hint">
-                  Statystyki dotyczą wybranej kolejki i danych zwracanych przez
-                  Riot.
+                  {tl("Statystyki dotyczą wybranej kolejki i danych zwracanych przez Riot.")}
                 </p>
                 {options.map(([key, label, hint]) => (
                   <label className="toggle" key={key}>
@@ -725,8 +773,8 @@ export function App() {
                       <Icon name={optionIcons[key]} />
                     </span>
                     <span>
-                      <strong>{label}</strong>
-                      <small>{hint}</small>
+                      <strong>{tl(label)}</strong>
+                      <small>{tl(hint)}</small>
                     </span>
                     <input
                       type="checkbox"
@@ -741,21 +789,22 @@ export function App() {
                     ((settings.showForm || settings.showKda || settings.showCs) &&
                       player.moduleErrors?.recent !== undefined)) && (
                     <p className="error" role="alert">
-                      Riot nie zwrócił części danych (
-                      {[
-                        player.moduleErrors?.mastery !== undefined &&
-                          "top championi: błąd " + player.moduleErrors.mastery,
-                        player.moduleErrors?.recent !== undefined &&
-                          "forma/KDA/CS: błąd " + player.moduleErrors.recent,
-                      ]
-                        .filter(Boolean)
-                        .join(", ")}
-                      ). Błąd 403 oznacza klucz bez dostępu do tego API, 429 – limit zapytań.
+                      {tl(
+                        "Riot nie zwrócił części danych ({0}). Błąd 403 oznacza klucz bez dostępu do tego API, 429 – limit zapytań.",
+                        [
+                          player.moduleErrors?.mastery !== undefined &&
+                            tl("top championi: błąd {0}", player.moduleErrors.mastery),
+                          player.moduleErrors?.recent !== undefined &&
+                            tl("forma/KDA/CS: błąd {0}", player.moduleErrors.recent),
+                        ]
+                          .filter(Boolean)
+                          .join(", "),
+                      )}
                     </p>
                   )}
                 {range("topCount", "Liczba championów", 1, 3, "")}
-                <div className="view-picker" role="radiogroup" aria-label="Prezentacja dodatkowych statystyk">
-                  <span>Prezentacja forma / KDA / CS / top championi</span>
+                <div className="view-picker" role="radiogroup" aria-label={tl("Prezentacja dodatkowych statystyk")}>
+                  <span>{tl("Prezentacja forma / KDA / CS / top championi")}</span>
                   {extraViews.map(([id, name, note]) => (
                     <button
                       key={id}
@@ -765,31 +814,31 @@ export function App() {
                       onClick={() => update("extraView", id)}
                     >
                       <ViewPreview id={id} />
-                      <strong>{name}</strong>
-                      <small>{note}</small>
+                      <strong>{tl(name)}</strong>
+                      <small>{tl(note)}</small>
                     </button>
                   ))}
                 </div>
               </Card>
             )}
             <details className="settings-card import-card">
-              <summary>Wczytaj ustawienia z linku</summary>
+              <summary>{tl("Wczytaj ustawienia z linku")}</summary>
               <input
-                aria-label="Link do importu"
+                aria-label={tl("Link do importu")}
                 value={importValue}
                 onChange={(e) => setImportValue(e.target.value)}
                 placeholder="https://…/widget?…"
               />
-              <button onClick={importLink}>Wczytaj ustawienia</button>
+              <button onClick={importLink}>{tl("Wczytaj ustawienia")}</button>
             </details>
             <button
               className="reset-button"
               onClick={() => {
-                setSettings({ ...defaultSettings });
-                setNotice("Przywrócono domyślne ustawienia.");
+                setSettings({ ...defaultSettings, lang: settings.lang });
+                setNotice(tl("Przywrócono domyślne ustawienia."));
               }}
             >
-              Przywróć domyślne ustawienia
+              {tl("Przywróć domyślne ustawienia")}
             </button>
           </div>
           <section className="preview-column">
@@ -797,11 +846,11 @@ export function App() {
               <div className="preview-heading">
                 <h2>
                   <Icon name="monitor" />
-                  Podgląd na żywo
+                  {tl("Podgląd na żywo")}
                 </h2>
                 <span>
                   <i className="status-dot" />
-                  {loading ? "POBIERANIE" : matched ? "DANE RIOT" : "DEMO"}
+                  {loading ? tl("POBIERANIE") : matched ? tl("DANE RIOT") : "DEMO"}
                 </span>
               </div>
               <div className={"preview-scene scene-" + scene}>
@@ -810,8 +859,8 @@ export function App() {
                     {scene === "rift"
                       ? "SUMMONER’S RIFT"
                       : scene === "dark"
-                        ? "CIEMNA SCENA"
-                        : "PRZEZROCZYSTOŚĆ"}
+                        ? tl("CIEMNA SCENA")
+                        : tl("PRZEZROCZYSTOŚĆ")}
                   </span>
                   <b>PREVIEW</b>
                 </div>
@@ -824,7 +873,7 @@ export function App() {
                 )}
                 <BannerFrame player={previewPlayer} settings={settings} />
                 {(needsMastery || needsRecent || !matched) && (
-                  <span className="demo-note">Demo data for preview</span>
+                  <span className="demo-note">{tl("Demo data for preview")}</span>
                 )}
                 <span className="scene-footer">
                   LEAGUE OF LEGENDS <i>•</i>{" "}
@@ -832,7 +881,7 @@ export function App() {
                 </span>
               </div>
               <div className="scene-picker">
-                <span>Tło podglądu</span>
+                <span>{tl("Tło podglądu")}</span>
                 {[
                   ["rift", "Rift"],
                   ["dark", "Ciemne"],
@@ -844,7 +893,7 @@ export function App() {
                     aria-pressed={scene === id}
                     onClick={() => setScene(id)}
                   >
-                    {label}
+                    {tl(label)}
                   </button>
                 ))}
               </div>
@@ -852,27 +901,27 @@ export function App() {
                 <span>
                   {selected.name} <i>/</i> {size.width} × {size.height} px
                 </span>
-                <span>Skalowany do podglądu</span>
+                <span>{tl("Skalowany do podglądu")}</span>
               </div>
               <div className="export-block">
                 <div className="export-title">
-                  <h3>Twój baner jest gotowy</h3>
+                  <h3>{tl("Twój baner jest gotowy")}</h3>
                   <span>OBS · STREAMLABS</span>
                 </div>
-                <p>Jeden link. Aktualne statystyki na streamie.</p>
+                <p>{tl("Jeden link. Aktualne statystyki na streamie.")}</p>
                 <div className="export-actions">
                   <button className="primary" onClick={openExport}>
                     <Icon name="monitor" />
-                    Generuj link OBS
+                    {tl("Generuj link OBS")}
                     <Icon name="arrow" />
                   </button>
                   <button
-                    aria-label="Udostępnij ustawienia"
-                    title="Kopiuj link do ustawień Studio"
+                    aria-label={tl("Udostępnij ustawienia")}
+                    title={tl("Kopiuj link do ustawień Studio")}
                     onClick={() =>
                       copy(
                         location.origin + "/?" + settingsQuery(settings),
-                        "Skopiowano link do ustawień",
+                        tl("Skopiowano link do ustawień"),
                       )
                     }
                   >
@@ -884,14 +933,14 @@ export function App() {
             <a className="obs-tip" href="/docs/szybki-start">
               <Icon name="book" />
               <span>
-                <strong>Pierwszy raz z banerem?</strong>
-                <small>Dodaj go do OBS w kilku prostych krokach.</small>
+                <strong>{tl("Pierwszy raz z banerem?")}</strong>
+                <small>{tl("Dodaj go do OBS w kilku prostych krokach.")}</small>
               </span>
               <Icon name="arrow" />
             </a>
             <div className="collection-note">
               <span>LEAGUE COLLECTION</span>
-              <p>Zaprojektowane do Twojej następnej wygranej.</p>
+              <p>{tl("Zaprojektowane do Twojej następnej wygranej.")}</p>
             </div>
           </section>
         </main>
@@ -933,26 +982,24 @@ export function App() {
           }
         }}
       >
-        <span className="demo-pill">TRYB OGRANICZONY</span>
-        <h2 id="demo-title">Wersja demonstracyjna</h2>
+        <span className="demo-pill">{tl("TRYB OGRANICZONY")}</span>
+        <h2 id="demo-title">{tl("Wersja demonstracyjna")}</h2>
         <p>
-          LoL Banner Studio czeka na akceptację aplikacji w{" "}
-          <strong>Riot Developer Portal</strong>. Do tego czasu strona działa w
-          trybie ograniczonym.
+          {tl("LoL Banner Studio czeka na akceptację aplikacji w")}{" "}
+          <strong>Riot Developer Portal</strong>
+          {tl(". Do tego czasu strona działa w trybie ograniczonym.")}
         </p>
         <ul>
-          <li>Dane z Riot API mogą być chwilowo niedostępne lub ograniczone.</li>
+          <li>{tl("Dane z Riot API mogą być chwilowo niedostępne lub ograniczone.")}</li>
           <li>
-            Część statystyk (forma, KDA, top championi) może się nie wczytać. W
-            podglądzie zastępują je dane demonstracyjne z oznaczeniem.
+            {tl("Część statystyk (forma, KDA, top championi) może się nie wczytać. W podglądzie zastępują je dane demonstracyjne z oznaczeniem.")}
           </li>
           <li>
-            Wygenerowane linki będą działać, ale wygląd i dane mogą się jeszcze
-            zmieniać.
+            {tl("Wygenerowane linki będą działać, ale wygląd i dane mogą się jeszcze zmieniać.")}
           </li>
         </ul>
         <button className="primary" onClick={() => demoDialog.current?.close()}>
-          Rozumiem
+          {tl("Rozumiem")}
         </button>
       </dialog>
       <dialog
@@ -961,17 +1008,17 @@ export function App() {
         onClose={() => setExportOpen(false)}
       >
         <div className="dialog-heading">
-          <h2>Dodaj baner do OBS</h2>
-          <button aria-label="Zamknij" onClick={() => dialog.current?.close()}>
+          <h2>{tl("Dodaj baner do OBS")}</h2>
+          <button aria-label={tl("Zamknij")} onClick={() => dialog.current?.close()}>
             ×
           </button>
         </div>
-        <p>Skopiuj adres do źródła „Przeglądarka”.</p>
+        <p>{tl("Skopiuj adres do źródła „Przeglądarka”.")}</p>
         {exportOpen && (
           <>
             <div className="obs-preview-head">
-              <span>Podgląd z wygenerowanego linku</span>
-              <small>tak zobaczysz go w OBS</small>
+              <span>{tl("Podgląd z wygenerowanego linku")}</span>
+              <small>{tl("tak zobaczysz go w OBS")}</small>
             </div>
             <div ref={frameHost} className={"obs-frame scene-" + scene}>
               {(() => {
@@ -982,7 +1029,7 @@ export function App() {
                     style={{ width: size.width * fit, height: size.height * fit }}
                   >
                     <iframe
-                      title="Podgląd widżetu z wygenerowanego linku"
+                      title={tl("Podgląd widżetu z wygenerowanego linku")}
                       src={widgetUrl(settings)}
                       style={{
                         width: size.width,
@@ -997,7 +1044,7 @@ export function App() {
           </>
         )}
         <label>
-          Adres źródła
+          {tl("Adres źródła")}
           <input
             readOnly
             value={widgetUrl(settings)}
@@ -1005,20 +1052,20 @@ export function App() {
           />
         </label>
         <button className="primary" onClick={() => copy(widgetUrl(settings))}>
-          Kopiuj link OBS
+          {tl("Kopiuj link OBS")}
         </button>
         <div className="export-dimensions">
           <div>
-            Szerokość<strong>{size.width} px</strong>
+            {tl("Szerokość")}<strong>{size.width} px</strong>
           </div>
           <div>
-            Wysokość<strong>{size.height} px</strong>
+            {tl("Wysokość")}<strong>{size.height} px</strong>
           </div>
         </div>
         <a href={widgetUrl(settings)} target="_blank" rel="noreferrer">
-          Otwórz widżet w nowej karcie ↗
+          {tl("Otwórz widżet w nowej karcie ↗")}
         </a>
-        <p className="hint">Przezroczyste tło · aktualizacja co 2 minuty</p>
+        <p className="hint">{tl("Przezroczyste tło · aktualizacja co 2 minuty")}</p>
         {notice && <p role="status">{notice}</p>}
       </dialog>
     </div>

@@ -2847,3 +2847,54 @@ html.widget #root {
 .demo-dialog .primary {
   width: 100%;
 }
+
+/* Przełącznik języka w menu */
+.sidebar-lang {
+  display: flex;
+  gap: 6px;
+  margin: 18px 4px 0;
+}
+.sidebar-lang button {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 6px;
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  color: #8e8e99;
+  background: #17171c;
+  border: 1px solid #25252b;
+}
+.sidebar-lang button[aria-pressed="true"] {
+  color: #fff;
+  background: #29191e;
+  border-color: #4b262e;
+}
+.sidebar-lang .flag {
+  width: 16px;
+  height: 11px;
+  border-radius: 2px;
+  box-shadow: 0 0 0 1px #ffffff22;
+}
+@media (max-width: 960px) {
+  .sidebar-lang {
+    flex-direction: column;
+    margin: 18px 0 0;
+  }
+  .sidebar-lang button > span {
+    display: none;
+  }
+  .sidebar nav button > span {
+    display: none;
+  }
+}
+@media (max-width: 720px) {
+  .sidebar-lang {
+    flex-direction: row;
+    margin: 0;
+  }
+}

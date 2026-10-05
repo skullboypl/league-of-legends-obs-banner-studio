@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { fetchPlayer } from "./api";
 import { BannerFrame } from "./PlayerBanner";
+import { tr } from "./i18n";
 import { settingsFromUrl } from "./settings";
 import { watchForUpdates } from "./updates";
 import type { PlayerData } from "./types";
@@ -17,7 +18,7 @@ export function Widget() {
   useEffect(() => {
     let active = true;
     const load = () =>
-      fetchPlayer(settings.riotId, settings.platform, settings.queue)
+      fetchPlayer(settings.riotId, settings.platform, settings.queue, settings.lang)
         .then((data) => {
           if (active) {
             setPlayer(data);
@@ -46,7 +47,9 @@ export function Widget() {
       {!player && (
         <p className="widget-message">
           {error ||
-            (loading ? "Pobieranie danych Riot…" : "Brak danych gracza.")}
+            (loading
+              ? tr(settings.lang, "Pobieranie danych Riot…")
+              : tr(settings.lang, "Brak danych gracza."))}
         </p>
       )}
     </main>

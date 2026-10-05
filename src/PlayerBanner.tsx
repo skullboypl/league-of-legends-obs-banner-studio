@@ -1,6 +1,7 @@
 import { CSSProperties, ReactNode, useEffect, useRef, useState } from "react";
 import type { BannerSettings, PlayerData } from "./types";
 import { RankEmblem } from "./RankEmblem";
+import { tr } from "./i18n";
 import { baseSize, dimensions, extraLayout } from "./settings";
 
 export { RankEmblem } from "./RankEmblem";
@@ -24,23 +25,23 @@ function ClassicBanner({
   const series = ranked?.miniSeries;
   const stats = [
     settings.showWinrate && {
-      label: "WIN RATE",
+      label: tr(settings.lang, "WIN RATE"),
       value: ranked ? winrate + "%" : "—",
     },
     settings.showRecord && {
-      label: "BILANS",
+      label: tr(settings.lang, "BILANS"),
       value: ranked ? ranked.wins + "W / " + ranked.losses + "L" : "—",
     },
     settings.showGames && {
-      label: "MECZE",
+      label: tr(settings.lang, "MECZE"),
       value: ranked ? String(games) : "—",
     },
   ].filter(Boolean) as { label: string; value: string }[];
   const extraTile = {
     showForm: {
-      label: "FORMA",
+      label: tr(settings.lang, "FORMA"),
       value: recent?.games.length ? (
-        <span className="form-pips" aria-label="Ostatnie gry">
+        <span className="form-pips" aria-label={tr(settings.lang, "Ostatnie gry")}>
           {[...recent.games].reverse().map((win, index) => (
             <i key={index} className={win ? "win" : "loss"} />
           ))}
@@ -62,7 +63,7 @@ function ClassicBanner({
       value: player.mastery ? player.mastery.score.toLocaleString("pl-PL") : "—",
     },
     showTop: {
-      label: "TOP CHAMPIONI",
+      label: tr(settings.lang, "TOP CHAMPIONI"),
       value: top.length ? (
         <span className="top-champs">
           {top.map((champion) => (
@@ -208,10 +209,10 @@ function ClassicBanner({
               </span>
             )}
             {settings.showStreak && ranked?.hotStreak && (
-              <em className="chip">SERIA</em>
+              <em className="chip">{tr(settings.lang, "SERIA")}</em>
             )}
             {settings.showStreak && series && (
-              <em className="chip series" aria-label="Seria awansowa">
+              <em className="chip series" aria-label={tr(settings.lang, "Seria awansowa")}>
                 {series.progress.split("").map((step, index) => (
                   <i key={index} className={step === "W" ? "win" : step === "L" ? "loss" : ""} />
                 ))}
@@ -238,7 +239,7 @@ function ClassicBanner({
       {settings.showProgress && ranked && !apex && (
         <div
           className="lp-track"
-          aria-label={ranked.leaguePoints + " LP ze 100"}
+          aria-label={tr(settings.lang, "{0} LP ze 100", ranked.leaguePoints)}
         >
           <i style={{ width: Math.min(ranked.leaguePoints, 100) + "%" }} />
         </div>
@@ -246,7 +247,7 @@ function ClassicBanner({
       {foot.height > 0 && (
         <div className={"banner-foot view-" + settings.extraView}>
           {settings.extraView === "ticker" ? (
-            <div className="foot-track" aria-label="Dodatkowe statystyki">
+            <div className="foot-track" aria-label={tr(settings.lang, "Dodatkowe statystyki")}>
               {["a", "b", "c", "d"].map((copy, index) => (
                 <div key={copy} aria-hidden={index ? "true" : undefined}>
                   {tileNodes(foot.pages[0], copy)}

@@ -1,4 +1,5 @@
 import { defaultSettings, platforms } from "./data";
+import { detectLang, isLang } from "./i18n";
 import type { BannerSettings, BannerStyle, BannerTheme } from "./types";
 
 export const presets: {
@@ -212,6 +213,7 @@ export function sanitizeSettings(
     input.avatarShape === "round"
   )
     result.avatarShape = input.avatarShape;
+  if (isLang(input.lang)) result.lang = input.lang;
   if (themes.some((t) => t.id === input.theme))
     result.theme = input.theme as BannerTheme;
   if (extraViews.some(([id]) => id === input.extraView))
@@ -250,13 +252,20 @@ export function widgetUrl(settings: BannerSettings) {
   return location.origin + "/widget?" + settingsQuery(settings);
 }
 export function studioSettings() {
-  if (location.search) return settingsFromUrl();
+  // Język: z linku, z zapisanych ustawień albo z przeglądarki.
+  if (location.search) {
+    const settings = settingsFromUrl();
+    if (!new URLSearchParams(location.search).has("lang"))
+      settings.lang = detectLang();
+    return settings;
+  }
   try {
-    return sanitizeSettings(
-      JSON.parse(localStorage.getItem("lol-studio-v2") || "{}"),
-    );
+    const stored = JSON.parse(localStorage.getItem("lol-studio-v2") || "{}");
+    const settings = sanitizeSettings(stored);
+    if (!isLang(stored.lang)) settings.lang = detectLang();
+    return settings;
   } catch {
-    return { ...defaultSettings };
+    return { ...defaultSettings, lang: detectLang() };
   }
 }
 // Stopka z dodatkowymi statystykami wewnątrz banera. Szerokości kafelków (px) służą do

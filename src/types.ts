@@ -22,6 +22,8 @@ export type BannerStyle =
   | "flip"
   | "ladder";
 
+import type { Lang } from "./i18n";
+
 export type ExtraView = "strip" | "pills" | "rings" | "cycle" | "ticker";
 
 export type AvatarShape = "round" | "square" | "hex";
@@ -105,4 +107,5 @@ export type BannerSettings = {
   showMastery: boolean;
   showTopline: boolean;
   avatarShape: AvatarShape;
+  lang: Lang;
 };

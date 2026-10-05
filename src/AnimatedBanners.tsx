@@ -1,5 +1,6 @@
 import { CSSProperties, ReactNode, useEffect, useState } from "react";
 import { RankEmblem } from "./RankEmblem";
+import { tr } from "./i18n";
 import type { BannerSettings, PlayerData } from "./types";
 import "./animated.css";
 
@@ -19,7 +20,7 @@ function facts(player: PlayerData, settings: BannerSettings) {
   const recent = player.recent?.games.length ? player.recent : null;
   const top = (player.mastery?.top ?? []).slice(0, settings.topCount);
   const pips = recent ? (
-    <span className="form-pips" aria-label="Ostatnie gry">
+    <span className="form-pips" aria-label={tr(settings.lang, "Ostatnie gry")}>
       {[...recent.games].reverse().map((win, index) => (
         <i key={index} className={win ? "win" : "loss"} />
       ))}
@@ -39,14 +40,14 @@ function facts(player: PlayerData, settings: BannerSettings) {
     "—"
   );
   const atoms = [
-    settings.showWinrate && { key: "wr", label: "WIN RATE", value: ranked ? winrate + "%" : "—" },
+    settings.showWinrate && { key: "wr", label: tr(settings.lang, "WIN RATE"), value: ranked ? winrate + "%" : "—" },
     settings.showRecord && {
       key: "rec",
-      label: "BILANS",
+      label: tr(settings.lang, "BILANS"),
       value: ranked ? ranked.wins + "W / " + ranked.losses + "L" : "—",
     },
-    settings.showGames && { key: "games", label: "MECZE", value: ranked ? String(games) : "—" },
-    settings.showForm && { key: "form", label: "FORMA", value: pips },
+    settings.showGames && { key: "games", label: tr(settings.lang, "MECZE"), value: ranked ? String(games) : "—" },
+    settings.showForm && { key: "form", label: tr(settings.lang, "FORMA"), value: pips },
     settings.showKda && { key: "kda", label: "KDA", value: recent ? recent.kda.toFixed(1) : "—" },
     settings.showCs && { key: "cs", label: "CS / MIN", value: recent ? recent.csPerMin.toFixed(1) : "—" },
     settings.showMastery && {
@@ -54,7 +55,7 @@ function facts(player: PlayerData, settings: BannerSettings) {
       label: "MASTERY",
       value: player.mastery ? player.mastery.score.toLocaleString("pl-PL") : "—",
     },
-    settings.showTop && { key: "top", label: "TOP CHAMPIONI", value: champs },
+    settings.showTop && { key: "top", label: tr(settings.lang, "TOP CHAMPIONI"), value: champs },
   ].filter(Boolean) as Atom[];
   return {
     ranked,
@@ -142,7 +143,7 @@ function Deck({ player, settings }: Props) {
         <div className="ab-rank">
           <RankEmblem tier={f.ranked?.tier} />
           <span>{f.tier}</span>
-          {f.streak && <em>SERIA</em>}
+          {f.streak && <em>{tr(settings.lang, "SERIA")}</em>}
         </div>
       )}
       <div className="deck-view" key={index}>
@@ -205,7 +206,7 @@ function Orbit({ player, settings }: Props) {
               {f.lp ?? "—"} <small>LP</small>
             </strong>
           )}
-          {f.streak && <em className="ab-chip">SERIA</em>}
+          {f.streak && <em className="ab-chip">{tr(settings.lang, "SERIA")}</em>}
         </div>
       </div>
       {f.atoms.length > 0 && (
@@ -295,7 +296,7 @@ function Hex({ player, settings }: Props) {
             {settings.showRank && (
               <span>
                 {f.tier}
-                {f.streak && <em>SERIA</em>}
+                {f.streak && <em>{tr(settings.lang, "SERIA")}</em>}
               </span>
             )}
             {settings.showLP && (
@@ -334,7 +335,7 @@ function Tabs({ player, settings }: Props) {
   const pages: { id: string; label: string; body: ReactNode }[] = [
     {
       id: "profile",
-      label: "PROFIL",
+      label: tr(settings.lang, "PROFIL"),
       body: (
         <div className="tabs-profile">
           <Avatar player={player} settings={settings} />
@@ -358,20 +359,20 @@ function Tabs({ player, settings }: Props) {
   if (stats.length)
     pages.push({
       id: "stats",
-      label: "STATYSTYKI",
+      label: tr(settings.lang, "STATYSTYKI"),
       body: <div className="tabs-grid">{stats.map(atomNode)}</div>,
     });
   const form = pick("form", "kda", "cs");
   if (form.length)
     pages.push({
       id: "form",
-      label: "FORMA",
+      label: tr(settings.lang, "FORMA"),
       body: <div className="tabs-grid big">{form.map(atomNode)}</div>,
     });
   if (settings.showTop && f.top.length)
     pages.push({
       id: "champs",
-      label: "CHAMPIONI",
+      label: tr(settings.lang, "CHAMPIONI"),
       body: (
         <div className="tabs-champs">
           {f.top.map((champion) => (
@@ -382,7 +383,7 @@ function Tabs({ player, settings }: Props) {
               <div>
                 <strong>{champion.name}</strong>
                 <small>
-                  M{champion.level} · {formatPoints(champion.points)} pkt
+                  M{champion.level} · {tr(settings.lang, "{0} pkt", formatPoints(champion.points))}
                 </small>
               </div>
             </div>
@@ -466,7 +467,7 @@ function Radar({ player, settings }: Props) {
               {f.lp ?? "—"} <small>LP</small>
             </strong>
           )}
-          {f.streak && <em className="ab-chip">SERIA</em>}
+          {f.streak && <em className="ab-chip">{tr(settings.lang, "SERIA")}</em>}
         </div>
         {f.atoms.length > 0 && <div className="radar-stats">{f.atoms.slice(0, 4).map(atomNode)}</div>}
       </div>
@@ -479,7 +480,7 @@ function Flip({ player, settings }: Props) {
   const f = facts(player, settings);
   const faces: Atom[] = [
     ...(settings.showLP ? [{ key: "lp", label: "LP", value: f.lp ?? "—" }] : []),
-    ...(settings.showRank ? [{ key: "tier", label: "RANGA", value: f.tier }] : []),
+    ...(settings.showRank ? [{ key: "tier", label: tr(settings.lang, "RANGA"), value: f.tier }] : []),
     ...f.atoms,
   ];
   const cards: Atom[][] = [];

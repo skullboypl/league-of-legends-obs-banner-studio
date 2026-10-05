@@ -36,6 +36,7 @@ export const defaultSettings: BannerSettings = {
   showMastery: false,
   showTopline: true,
   avatarShape: "round",
+  lang: "pl",
 };
 
 export const samplePlayer: PlayerData = {
