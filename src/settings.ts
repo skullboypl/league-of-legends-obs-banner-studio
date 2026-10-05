@@ -219,6 +219,7 @@ export const themes: {
   { id: "circuit", name: "Circuit", note: "Siatka i ścięte rogi" },
   { id: "aurora", name: "Aurora", note: "Animowana zorza" },
   { id: "amoled", name: "Amoled", note: "Czerń bez ramki" },
+  { id: "avatarbg", name: "Avatar BG", note: "Rozmyty awatar w tle" },
 ];
 export function extraTiles(settings: BannerSettings) {
   return (

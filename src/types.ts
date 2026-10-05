@@ -22,7 +22,8 @@ export type BannerTheme =
   | "neon"
   | "circuit"
   | "aurora"
-  | "amoled";
+  | "amoled"
+  | "avatarbg";
 
 export type RankedEntry = {
   queueType: string;

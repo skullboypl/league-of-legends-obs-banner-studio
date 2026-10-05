@@ -152,6 +152,9 @@ function ClassicBanner({
           "--radius": settings.radius + "px",
           "--foot-h": foot.height + "px",
           "--speed": settings.speed / 100,
+          "--avatar-url": player.profileIconUrl
+            ? 'url("' + player.profileIconUrl + '")'
+            : "none",
         } as CSSProperties
       }
     >

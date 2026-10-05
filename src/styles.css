@@ -2340,3 +2340,26 @@ html.widget #root {
 .shape-hex .avatar > small {
   bottom: 9px;
 }
+
+/* Motyw Avatar BG: ikona profilu jako rozmyte, lekko widoczne tło */
+.player-banner.theme-avatarbg:after {
+  content: "";
+  position: absolute;
+  inset: -24px;
+  z-index: -1;
+  display: block;
+  background:
+    linear-gradient(90deg, var(--banner-bg) 8%, transparent 70%),
+    radial-gradient(ellipse at 85% 50%, color-mix(in srgb, var(--accent) 30%, transparent), transparent 65%),
+    var(--avatar-url) center / cover no-repeat;
+  filter: blur(16px) saturate(1.25);
+  opacity: 0.55;
+  transform: scale(1.1);
+}
+.theme-avatarbg {
+  background: color-mix(in srgb, var(--banner-bg) 70%, transparent);
+}
+.dot-avatarbg {
+  background: radial-gradient(circle at 60% 40%, #c89b3c, #3a2a10 70%);
+  filter: blur(0.6px);
+}

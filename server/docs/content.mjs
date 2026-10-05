@@ -361,7 +361,7 @@ export const pages = [
     description:
       'Jak dopasować baner rankingu League of Legends: kolor akcentu, tło, krój pisma, krycie, zaokrąglenie, poświata, animacja oraz widoczność elementów.',
     summary:
-      'Możesz zmienić kolor akcentu, tła i tekstu, krój pisma (Inter, Barlow Condensed, monospace), krycie 10–100%, zaokrąglenie 0–32 px, poświatę i animację oraz wybrać jeden z 6 motywów oraz włączyć lub wyłączyć 15 elementów banera, w tym serię wygranych, formę z ostatnich 10 gier, KDA, CS na minutę i top championów.',
+      'Możesz zmienić kolor akcentu, tła i tekstu, krój pisma (Inter, Barlow Condensed, monospace), krycie 10–100%, zaokrąglenie 0–32 px, poświatę i animację oraz wybrać jeden z 7 motywów oraz włączyć lub wyłączyć 15 elementów banera, w tym serię wygranych, formę z ostatnich 10 gier, KDA, CS na minutę i top championów.',
     sections: [
       {
         id: 'wyglad',
@@ -404,6 +404,7 @@ export const pages = [
               '**Circuit** – siatka i ścięte rogi.',
               '**Aurora** – animowana, powoli przesuwająca się zorza.',
               '**Amoled** – czerń bez ramki.',
+              '**Avatar BG** – ikona profilu gracza jako rozmyte, lekko widoczne tło banera.',
             ],
           },
         ],
@@ -511,7 +512,7 @@ export const pages = [
                 ['`style`', '`crest`, `lane`, `compact`, `card`, `split`, `minimal`, `tower`, `scoreboard`, `deck`, `orbit`, `marquee`, `hex`', '`crest`'],
                 ['`font`', '`sans`, `condensed`, `mono`', '`sans`'],
                 ['`extraView`', 'prezentacja formy, KDA, CS i top championów: `strip`, `pills`, `rings`, `cycle`, `ticker`', '`strip`'],
-                ['`theme`', 'motyw: `classic`, `glass`, `neon`, `circuit`, `aurora`, `amoled`', '`classic`'],
+                ['`theme`', 'motyw: `classic`, `glass`, `neon`, `circuit`, `aurora`, `amoled`, `avatarbg`', '`classic`'],
               ],
             },
           },

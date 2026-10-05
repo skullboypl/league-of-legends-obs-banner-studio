@@ -44,7 +44,8 @@ export const samplePlayer: PlayerData = {
   tagLine: "6791",
   platform: "eun1",
   summonerLevel: 246,
-  profileIconUrl: "",
+  profileIconUrl:
+    "https://ddragon.leagueoflegends.com/cdn/15.1.1/img/profileicon/29.png",
   solo: {
     queueType: "RANKED_SOLO_5x5",
     tier: "GOLD",
