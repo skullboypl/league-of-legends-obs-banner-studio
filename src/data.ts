@@ -24,6 +24,11 @@ export const defaultSettings: BannerSettings = {
   showProgress: true,
   glow: true,
   animate: false,
+  showStreak: true,
+  showForm: false,
+  showKda: false,
+  showCs: false,
+  showTop: false,
 };
 
 export const samplePlayer: PlayerData = {
@@ -40,8 +45,22 @@ export const samplePlayer: PlayerData = {
     leaguePoints: 50,
     wins: 19,
     losses: 19,
+    hotStreak: true,
   },
   flex: null,
+  mastery: {
+    score: 412,
+    top: [
+      { championId: 1, name: "Annie", level: 7, points: 182000, iconUrl: "" },
+      { championId: 2, name: "Olaf", level: 6, points: 96000, iconUrl: "" },
+      { championId: 3, name: "Galio", level: 5, points: 54000, iconUrl: "" },
+    ],
+  },
+  recent: {
+    games: [true, true, false, true, false, true, true, false, true, true],
+    kda: 3.4,
+    csPerMin: 6.8,
+  },
   updatedAt: new Date().toISOString(),
 };
 

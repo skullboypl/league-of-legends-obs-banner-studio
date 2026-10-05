@@ -1,6 +1,6 @@
-import { CSSProperties, useEffect, useRef, useState } from "react";
+import { CSSProperties, ReactNode, useEffect, useRef, useState } from "react";
 import type { BannerSettings, PlayerData } from "./types";
-import { dimensions, presets } from "./settings";
+import { baseSize, dimensions, extraPanelHeight } from "./settings";
 
 export function RankEmblem({ tier = "UNRANKED" }: { tier?: string }) {
   return (
@@ -42,6 +42,9 @@ export function PlayerBanner({
   const winrate = games ? Math.round((ranked!.wins / games) * 100) : 0;
   const apex =
     ranked && ["MASTER", "GRANDMASTER", "CHALLENGER"].includes(ranked.tier);
+  const recent = player.recent;
+  const top = player.mastery?.top ?? [];
+  const series = ranked?.miniSeries;
   const stats = [
     settings.showWinrate && {
       label: "WIN RATE",
@@ -56,7 +59,61 @@ export function PlayerBanner({
       value: ranked ? String(games) : "—",
     },
   ].filter(Boolean) as { label: string; value: string }[];
+  const extras = [
+    settings.showForm && {
+      label: "FORMA",
+      value: recent?.games.length ? (
+        <span className="form-pips" aria-label="Ostatnie gry">
+          {[...recent.games].reverse().map((win, index) => (
+            <i key={index} className={win ? "win" : "loss"} />
+          ))}
+        </span>
+      ) : (
+        "—"
+      ),
+    },
+    settings.showKda && {
+      label: "KDA",
+      value: recent?.games.length ? recent.kda.toFixed(1) : "—",
+    },
+    settings.showCs && {
+      label: "CS / MIN",
+      value: recent?.games.length ? recent.csPerMin.toFixed(1) : "—",
+    },
+    settings.showTop && {
+      label: "TOP CHAMPIONI",
+      value: top.length ? (
+        <span className="top-champs">
+          {top.map((champion) => (
+            <span key={champion.championId} title={champion.name}>
+              {champion.iconUrl ? (
+                <img src={champion.iconUrl} alt={champion.name} />
+              ) : (
+                champion.name.slice(0, 1)
+              )}
+            </span>
+          ))}
+        </span>
+      ) : (
+        "—"
+      ),
+    },
+  ].filter(Boolean) as { label: string; value: ReactNode }[];
+  const panelHeight = extraPanelHeight(settings);
+  const themeStyle = {
+    "--accent": settings.accent,
+    "--banner-bg":
+      settings.background +
+      Math.round(settings.opacity * 2.55)
+        .toString(16)
+        .padStart(2, "0"),
+    "--ink": settings.textColor,
+    "--radius": settings.radius + "px",
+  } as CSSProperties;
+  const themeClass =
+    " font-" + settings.font + (settings.glow ? " has-glow" : "") + (settings.animate ? " animated" : "");
   return (
+    <div className="banner-stack">
     <article
       className={
         "player-banner banner-" +
@@ -126,6 +183,16 @@ export function PlayerBanner({
                   : "UNRANKED"}
               </span>
             )}
+            {settings.showStreak && ranked?.hotStreak && (
+              <em className="chip">SERIA</em>
+            )}
+            {settings.showStreak && series && (
+              <em className="chip series" aria-label="Seria awansowa">
+                {series.progress.split("").map((step, index) => (
+                  <i key={index} className={step === "W" ? "win" : step === "L" ? "loss" : ""} />
+                ))}
+              </em>
+            )}
             {settings.showLP && (
               <strong>
                 {ranked ? ranked.leaguePoints : "—"} <small>LP</small>
@@ -153,6 +220,20 @@ export function PlayerBanner({
         </div>
       )}
     </article>
+    {panelHeight > 0 && (
+      <div
+        className={"banner-extra" + themeClass}
+        style={{ ...themeStyle, height: panelHeight }}
+      >
+        {extras.map((stat) => (
+          <div key={stat.label}>
+            <small>{stat.label}</small>
+            <strong>{stat.value}</strong>
+          </div>
+        ))}
+      </div>
+    )}
+    </div>
   );
 }
 export function BannerFrame({
@@ -168,7 +249,7 @@ export function BannerFrame({
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const [available, setAvailable] = useState(0);
-  const preset = presets.find((p) => p.id === settings.style)!;
+  const preset = baseSize(settings);
   const size = dimensions(settings);
   useEffect(() => {
     if (!ref.current) return;

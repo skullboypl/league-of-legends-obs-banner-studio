@@ -17,7 +17,7 @@ export function Widget() {
   useEffect(() => {
     let active = true;
     const load = () =>
-      fetchPlayer(settings.riotId, settings.platform)
+      fetchPlayer(settings.riotId, settings.platform, settings.queue)
         .then((data) => {
           if (active) {
             setPlayer(data);

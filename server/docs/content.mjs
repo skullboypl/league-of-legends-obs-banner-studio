@@ -171,7 +171,7 @@ export const pages = [
           },
           { table: { head: ['Układ', 'Kod stylu', 'Opis', 'Wymiary (px)'], rows: sizeRows } },
           {
-            p: 'Przy skali innej niż 100% pomnóż wymiary przez skalę (np. Prime przy 120% to 984 × 216). Okno eksportu liczy to za Ciebie. Szczegóły w [układach banerów](/docs/uklady-banerow).',
+            p: 'Jeśli włączysz formę, KDA, CS lub top championów, do wysokości dochodzi panel pod banerem (ok. 55–100 px, zależnie od układu). Przy skali innej niż 100% pomnóż wymiary przez skalę (np. Prime przy 120% to 984 × 216). Okno eksportu liczy to za Ciebie. Szczegóły w [układach banerów](/docs/uklady-banerow).',
           },
         ],
       },
@@ -340,7 +340,7 @@ export const pages = [
     description:
       'Jak dopasować baner rankingu League of Legends: kolor akcentu, tło, krój pisma, krycie, zaokrąglenie, poświata, animacja oraz widoczność elementów.',
     summary:
-      'Możesz zmienić kolor akcentu, tła i tekstu, krój pisma (Inter, Barlow Condensed, monospace), krycie 10–100%, zaokrąglenie 0–32 px, poświatę i animację oraz włączyć lub wyłączyć 10 elementów banera.',
+      'Możesz zmienić kolor akcentu, tła i tekstu, krój pisma (Inter, Barlow Condensed, monospace), krycie 10–100%, zaokrąglenie 0–32 px, poświatę i animację oraz włączyć lub wyłączyć 15 elementów banera, w tym serię wygranych, formę z ostatnich 10 gier, KDA, CS na minutę i top championów.',
     sections: [
       {
         id: 'wyglad',
@@ -397,8 +397,16 @@ export const pages = [
                 ['Wygrane i porażki', '`showRecord`', 'włączone'],
                 ['Liczba meczów', '`showGames`', 'wyłączona'],
                 ['Pasek LP (0–100)', '`showProgress`', 'włączony'],
+                ['Serie: wygranych i awansowa', '`showStreak`', 'włączone'],
+                ['Forma: W/L z 10 ostatnich gier', '`showForm`', 'wyłączona'],
+                ['KDA z 10 ostatnich gier', '`showKda`', 'wyłączone'],
+                ['CS na minutę', '`showCs`', 'wyłączone'],
+                ['Top 3 championi (mastery)', '`showTop`', 'wyłączeni'],
               ],
             },
+          },
+          {
+            p: 'Forma, KDA i CS liczone są z ostatnich 10 gier wybranej kolejki (Solo/Duo albo Flex), a top championi z punktów mastery. Te cztery elementy pojawiają się w osobnym panelu pod banerem, więc **wysokość źródła w OBS rośnie** – aktualne wymiary zawsze pokazuje okno „Generuj link OBS”. Seria wygranych i seria awansowa pojawiają się przy randze tylko wtedy, gdy gracz ją ma.',
           },
           { note: 'Pasek LP jest ukryty dla rang Master, Grandmaster i Challenger, bo tam LP nie ma górnego limitu 100.' },
         ],
@@ -415,7 +423,7 @@ export const pages = [
     ],
     faq: [
       ['Jakie czcionki są dostępne w banerze?', 'Trzy: Inter (nowoczesny), Barlow Condensed (esportowy) i monospace (techniczny).'],
-      ['Czy mogę ukryć winrate lub LP?', 'Tak. W zakładce Statystyki każdy z 10 elementów banera ma osobny przełącznik.'],
+      ['Czy mogę ukryć winrate lub LP?', 'Tak. W zakładce Statystyki każdy z 15 elementów banera ma osobny przełącznik.'],
       ['Czy mogę przenieść ustawienia na inny komputer?', 'Tak. Skopiuj link do ustawień Studio lub widżetu i wklej go w sekcji „Wczytaj ustawienia z linku”.'],
     ],
     related: ['uklady-banerow', 'parametry-url'],
@@ -488,7 +496,7 @@ export const pages = [
         title: 'Przełączniki elementów',
         blocks: [
           {
-            p: 'Każdy z poniższych parametrów przyjmuje `1` (pokaż) lub `0` (ukryj): `showIcon`, `showLevel`, `showTag`, `showRegion`, `showRank`, `showLP`, `showWinrate`, `showRecord`, `showGames`, `showProgress`. Opis elementów: [personalizacja](/docs/personalizacja).',
+            p: 'Każdy z poniższych parametrów przyjmuje `1` (pokaż) lub `0` (ukryj): `showIcon`, `showLevel`, `showTag`, `showRegion`, `showRank`, `showLP`, `showWinrate`, `showRecord`, `showGames`, `showProgress`, `showStreak`, `showForm`, `showKda`, `showCs`, `showTop`. Opis elementów: [personalizacja](/docs/personalizacja).',
           },
           { p: 'Starsze parametry `icon`, `record` i `winrate` nadal działają i odpowiadają `showIcon`, `showRecord` i `showWinrate`.' },
         ],
@@ -729,7 +737,7 @@ export const pages = [
       ['Jak dodać baner do OBS?', 'Wygeneruj link w Studio, w OBS dodaj źródło „Przeglądarka”, wklej adres i ustaw wymiary z okna eksportu. Zobacz [instrukcję OBS Studio](/docs/obs-studio).'],
       ['Czy działa ze Streamlabs?', 'Tak, jako „Źródło przeglądarki”. Zobacz [instrukcję Streamlabs](/docs/streamlabs).'],
       ['Jak często odświeża się ranga?', 'Widżet odświeża dane co 2 minuty, a serwer buforuje odpowiedzi Riot API przez ok. 90 sekund.'],
-      ['Jakie dane pokazuje baner?', 'Rangę i emblemat, LP, win rate, wygrane i porażki, liczbę meczów, pasek LP, poziom konta, ikonę profilu, tag i serwer.'],
+      ['Jakie dane pokazuje baner?', 'Rangę i emblemat, LP, win rate, wygrane i porażki, liczbę meczów, pasek LP, serie, formę z 10 ostatnich gier, KDA, CS na minutę, top championów, poziom konta, ikonę profilu, tag i serwer.'],
       ['Ile jest układów banera?', 'Osiem. Zobacz [układy banerów](/docs/uklady-banerow).'],
       ['Które serwery są obsługiwane?', 'Szesnaście serwerów LoL, m.in. euw1, eun1, na1, kr. Pełna lista: [serwery i Riot ID](/docs/serwery-i-riot-id).'],
       ['Czy mój klucz Riot API jest bezpieczny?', 'Tak. Klucz jest tylko na serwerze i nie trafia do przeglądarki ani do linku. Zobacz [prywatność i bezpieczeństwo](/docs/prywatnosc-i-bezpieczenstwo).'],

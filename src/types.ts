@@ -15,6 +15,16 @@ export type RankedEntry = {
   leaguePoints: number;
   wins: number;
   losses: number;
+  hotStreak?: boolean;
+  miniSeries?: { target: number; wins: number; losses: number; progress: string };
+};
+
+export type ChampionMastery = {
+  championId: number;
+  name: string;
+  level: number;
+  points: number;
+  iconUrl: string;
 };
 
 export type PlayerData = {
@@ -26,6 +36,8 @@ export type PlayerData = {
   profileIconUrl: string;
   solo: RankedEntry | null;
   flex: RankedEntry | null;
+  mastery?: { score: number; top: ChampionMastery[] } | null;
+  recent?: { games: boolean[]; kda: number; csPerMin: number } | null;
   updatedAt: string;
 };
 
@@ -53,4 +65,9 @@ export type BannerSettings = {
   showProgress: boolean;
   glow: boolean;
   animate: boolean;
+  showStreak: boolean;
+  showForm: boolean;
+  showKda: boolean;
+  showCs: boolean;
+  showTop: boolean;
 };

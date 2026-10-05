@@ -15,6 +15,9 @@ const platformToRegion = {
   oc1: 'sea', ph2: 'sea', sg2: 'sea', th2: 'sea', tw2: 'sea', vn2: 'sea',
 };
 const cache = new Map();
+const matchCache = new Map();
+const queueIds = { solo: 420, flex: 440 };
+let championIndex = { version: '', byId: new Map(), expiresAt: 0 };
 const requestBuckets = new Map();
 
 function allowRequest(ip) {
@@ -41,6 +44,82 @@ async function riotGet(host, endpoint) {
   return response.json();
 }
 
+// Data Dragon: mapa championId -> nazwa pliku ikony, odświeżana raz na godzinę.
+async function getChampionIndex() {
+  if (championIndex.expiresAt > Date.now()) return championIndex;
+  const versions = await fetch('https://ddragon.leagueoflegends.com/api/versions.json').then((item) => item.json());
+  const version = versions[0];
+  const data = await fetch(`https://ddragon.leagueoflegends.com/cdn/${version}/data/pl_PL/champion.json`).then((item) => item.json());
+  const byId = new Map(Object.values(data.data).map((champion) => [Number(champion.key), { key: champion.id, name: champion.name }]));
+  championIndex = { version, byId, expiresAt: Date.now() + 3_600_000 };
+  return championIndex;
+}
+
+async function loadMastery(platform, puuid) {
+  const [top, score, index] = await Promise.all([
+    riotGet(platform, `/lol/champion-mastery/v4/champion-masteries/by-puuid/${encodeURIComponent(puuid)}/top?count=3`),
+    riotGet(platform, `/lol/champion-mastery/v4/scores/by-puuid/${encodeURIComponent(puuid)}`),
+    getChampionIndex(),
+  ]);
+  return {
+    score,
+    top: top.map((item) => {
+      const champion = index.byId.get(item.championId);
+      return {
+        championId: item.championId,
+        name: champion?.name || String(item.championId),
+        level: item.championLevel,
+        points: item.championPoints,
+        iconUrl: champion ? `https://ddragon.leagueoflegends.com/cdn/${index.version}/img/champion/${champion.key}.png` : '',
+      };
+    }),
+  };
+}
+
+async function loadMatch(region, matchId) {
+  const cached = matchCache.get(matchId);
+  if (cached) return cached;
+  const match = await riotGet(region, `/lol/match/v5/matches/${encodeURIComponent(matchId)}`);
+  matchCache.set(matchId, match);
+  if (matchCache.size > 500) matchCache.delete(matchCache.keys().next().value);
+  return match;
+}
+
+// Forma z ostatnich gier wybranej kolejki: W/L, KDA i CS na minutę.
+async function loadRecent(region, puuid, queue) {
+  const ids = await riotGet(
+    region,
+    `/lol/match/v5/matches/by-puuid/${encodeURIComponent(puuid)}/ids?queue=${queueIds[queue]}&count=10`,
+  );
+  const matches = (await Promise.allSettled(ids.map((id) => loadMatch(region, id))))
+    .filter((item) => item.status === 'fulfilled')
+    .map((item) => item.value);
+  const games = matches
+    .map((match) => {
+      const me = match.info.participants.find((participant) => participant.puuid === puuid);
+      if (!me) return null;
+      return {
+        win: me.win,
+        kills: me.kills,
+        deaths: me.deaths,
+        assists: me.assists,
+        cs: me.totalMinionsKilled + me.neutralMinionsKilled,
+        minutes: match.info.gameDuration / 60,
+        endedAt: match.info.gameEndTimestamp || 0,
+      };
+    })
+    .filter(Boolean)
+    .sort((a, b) => b.endedAt - a.endedAt);
+  if (!games.length) return { games: [], kda: 0, csPerMin: 0 };
+  const sum = (key) => games.reduce((total, game) => total + game[key], 0);
+  const minutes = games.reduce((total, game) => total + game.minutes, 0);
+  return {
+    games: games.map((game) => game.win),
+    kda: Math.round(((sum('kills') + sum('assists')) / Math.max(1, sum('deaths'))) * 10) / 10,
+    csPerMin: minutes ? Math.round((sum('cs') / minutes) * 10) / 10 : 0,
+  };
+}
+
 app.disable('x-powered-by');
 app.get('/api/health', (_request, response) => {
   response.json({ ok: true, riotKeyConfigured: Boolean(apiKey) });
@@ -65,11 +144,12 @@ app.get('/api/player', async (request, response) => {
   const tagLine = String(request.query.tagLine || '').trim();
   const platform = String(request.query.platform || '').toLowerCase();
   const region = platformToRegion[platform];
+  const queue = request.query.queue === 'flex' ? 'flex' : 'solo';
   if (!gameName || !tagLine || !region) {
     return response.status(400).json({ error: 'Podaj poprawny Riot ID i obsługiwany region.' });
   }
 
-  const cacheKey = `${platform}:${gameName.toLowerCase()}#${tagLine.toLowerCase()}`;
+  const cacheKey = `${platform}:${gameName.toLowerCase()}#${tagLine.toLowerCase()}:${queue}`;
   const cached = cache.get(cacheKey);
   if (cached && cached.expiresAt > Date.now()) {
     response.set('Cache-Control', 'public, max-age=30');
@@ -90,6 +170,11 @@ app.get('/api/player', async (request, response) => {
       `/lol/league/v4/entries/by-puuid/${encodeURIComponent(account.puuid)}`,
     );
     const versions = await fetch('https://ddragon.leagueoflegends.com/api/versions.json').then((item) => item.json());
+    // Moduły opcjonalne: ich awaria nie psuje podstawowych danych banera.
+    const [mastery, recent] = await Promise.allSettled([
+      loadMastery(platform, account.puuid),
+      loadRecent(region, account.puuid, queue),
+    ]);
     const solo = entries.find((entry) => entry.queueType === 'RANKED_SOLO_5x5') || null;
     const flex = entries.find((entry) => entry.queueType === 'RANKED_FLEX_SR') || null;
     const value = {
@@ -101,6 +186,8 @@ app.get('/api/player', async (request, response) => {
       profileIconUrl: `https://ddragon.leagueoflegends.com/cdn/${versions[0]}/img/profileicon/${summoner.profileIconId}.png`,
       solo,
       flex,
+      mastery: mastery.status === 'fulfilled' ? mastery.value : null,
+      recent: recent.status === 'fulfilled' ? recent.value : null,
       updatedAt: new Date().toISOString(),
     };
     cache.set(cacheKey, { value, expiresAt: Date.now() + 90_000 });

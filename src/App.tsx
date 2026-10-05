@@ -76,6 +76,11 @@ const options = [
   ["showRecord", "Wygrane i porażki", "Bilans sezonu w kolejce"],
   ["showGames", "Liczba meczów", "Suma wygranych i porażek"],
   ["showProgress", "Pasek LP", "0–100 LP; bez paska dla Master+"],
+  ["showStreak", "Serie", "Seria wygranych i seria awansowa"],
+  ["showForm", "Forma", "Wyniki W/L z ostatnich 10 gier kolejki"],
+  ["showKda", "KDA", "Średnie KDA z ostatnich 10 gier"],
+  ["showCs", "CS na minutę", "Średnia z ostatnich 10 gier"],
+  ["showTop", "Top championi", "Trzech championów z najwyższym mastery"],
 ] as const;
 
 export function App() {
@@ -108,6 +113,10 @@ export function App() {
     loadPlayer();
     return () => request.current?.abort();
   }, []);
+  useEffect(() => {
+    // Forma z meczów zależy od kolejki, więc po jej zmianie pobieramy dane ponownie.
+    if (loaded) loadPlayer();
+  }, [settings.queue]);
   useEffect(
     () =>
       watchForUpdates(() => {
@@ -138,6 +147,7 @@ export function App() {
       const data = await fetchPlayer(
         settings.riotId,
         settings.platform,
+        settings.queue,
         controller.signal,
       );
       setPlayer(data);

@@ -137,10 +137,47 @@ export function studioSettings() {
     return { ...defaultSettings };
   }
 }
-export function dimensions(settings: BannerSettings) {
+// Panel z dodatkowymi statystykami pod banerem: szerokości kafelków i układ wierszy.
+const extraTileWidths = { showForm: 78, showKda: 36, showCs: 52, showTop: 86 } as const;
+const EXTRA_GAP = 22;
+const EXTRA_ROW = 36;
+const EXTRA_ROW_GAP = 10;
+const EXTRA_PADDING = 10;
+const EXTRA_MARGIN = 6;
+export function extraTiles(settings: BannerSettings) {
+  return (Object.keys(extraTileWidths) as (keyof typeof extraTileWidths)[]).filter(
+    (key) => settings[key],
+  );
+}
+export function extraPanelHeight(settings: BannerSettings) {
+  const tiles = extraTiles(settings);
+  if (!tiles.length) return 0;
   const preset = presets.find((p) => p.id === settings.style)!;
+  const room = preset.width - 40;
+  let rows = 1;
+  let used = 0;
+  for (const key of tiles) {
+    const width = extraTileWidths[key];
+    if (used && used + EXTRA_GAP + width > room) {
+      rows += 1;
+      used = width;
+    } else used += (used ? EXTRA_GAP : 0) + width;
+  }
+  return EXTRA_PADDING * 2 + rows * EXTRA_ROW + (rows - 1) * EXTRA_ROW_GAP;
+}
+// Rozmiar bazowy (skala 100%) razem z panelem dodatkowych statystyk.
+export function baseSize(settings: BannerSettings) {
+  const preset = presets.find((p) => p.id === settings.style)!;
+  const extra = extraPanelHeight(settings);
   return {
-    width: Math.round((preset.width * settings.scale) / 100),
-    height: Math.round((preset.height * settings.scale) / 100),
+    width: preset.width,
+    height: preset.height + (extra ? extra + EXTRA_MARGIN : 0),
+  };
+}
+export function dimensions(settings: BannerSettings) {
+  const base = baseSize(settings);
+  return {
+    width: Math.round((base.width * settings.scale) / 100),
+    height: Math.round((base.height * settings.scale) / 100),
   };
 }
