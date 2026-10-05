@@ -162,11 +162,34 @@ small {
 .active .nav-arrow {
   opacity: 1;
 }
-.sidebar nav button:last-child {
-  margin-top: 28px;
+.docs-nav {
+  display: grid;
+  gap: 7px;
+  margin-top: auto;
+  padding-top: 18px;
+  margin-bottom: 18px;
+  border-top: 1px solid var(--line);
+}
+.docs-nav a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 46px;
+  padding: 0 14px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  color: #96969f;
+  font-size: 12px;
+  font-weight: 600;
+}
+.docs-nav a:hover {
+  background: #1b1b21;
+  color: #fff;
+}
+.docs-nav a:hover .nav-arrow {
+  opacity: 1;
 }
 .sidebar-bottom {
-  margin-top: auto;
   padding: 28px 12px 0;
   border-top: 1px solid var(--line);
 }
@@ -927,6 +950,9 @@ input::placeholder {
 }
 .obs-tip {
   display: flex;
+  border: 1px solid #25252b;
+  border-radius: 6px;
+  color: inherit;
   align-items: center;
   gap: 12px;
   width: 100%;
@@ -1634,8 +1660,13 @@ html.widget #root {
   .brand > span:last-child,
   .workspace-label,
   .sidebar nav button > span,
+  .docs-nav a > span,
   .sidebar-bottom {
     display: none;
+  }
+  .docs-nav a {
+    justify-content: center;
+    padding: 12px 5px;
   }
   .brand {
     justify-content: center;
@@ -1705,8 +1736,16 @@ html.widget #root {
     padding: 10px;
     min-height: 0;
   }
-  .sidebar nav button:last-child {
+  .docs-nav {
+    display: flex;
     margin: 0;
+    padding: 0;
+    border: 0;
+    gap: 3px;
+  }
+  .docs-nav a {
+    min-height: 0;
+    padding: 10px;
   }
   .sidebar nav button.active:before {
     display: none;

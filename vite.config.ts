@@ -7,6 +7,11 @@ export default defineConfig({
     proxy: {
       '/api': 'http://localhost:8787',
       '/riot.txt': 'http://localhost:8787',
+      '/docs': 'http://localhost:8787',
+      '/sitemap.xml': 'http://localhost:8787',
+      '/robots.txt': 'http://localhost:8787',
+      '/llms.txt': 'http://localhost:8787',
+      '/llms-full.txt': 'http://localhost:8787',
     },
   },
 });

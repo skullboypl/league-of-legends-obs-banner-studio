@@ -62,7 +62,6 @@ const tabs = [
   { id: "player", name: "Podstawowe", icon: "sliders" },
   { id: "style", name: "Wygląd", icon: "palette" },
   { id: "stats", name: "Statystyki", icon: "stats" },
-  { id: "guide", name: "Instrukcja OBS", icon: "book" },
 ] as const;
 type Tab = (typeof tabs)[number]["id"];
 const options = [
@@ -238,6 +237,18 @@ export function App() {
             </button>
           ))}
         </nav>
+        <div className="docs-nav" role="navigation" aria-label="Dokumentacja">
+          <a href="/docs/obs-studio">
+            <Icon name="monitor" />
+            <span>Instrukcja OBS</span>
+            <span className="nav-arrow">›</span>
+          </a>
+          <a href="/docs">
+            <Icon name="book" />
+            <span>Dokumentacja</span>
+            <span className="nav-arrow">›</span>
+          </a>
+        </div>
         <div className="sidebar-bottom">
           <div className="game-badge">
             L
@@ -516,37 +527,6 @@ export function App() {
                 ))}
               </Card>
             )}
-            {tab === "guide" && (
-              <Card title="Dodaj baner do OBS">
-                <ol className="guide-steps">
-                  <li>
-                    <strong>Wygeneruj link</strong>
-                    <p>
-                      Ustaw konto i wygląd, a następnie kliknij „Generuj link
-                      OBS”.
-                    </p>
-                  </li>
-                  <li>
-                    <strong>Dodaj źródło przeglądarki</strong>
-                    <p>W OBS: Źródła → + → Przeglądarka. Wklej adres banera.</p>
-                  </li>
-                  <li>
-                    <strong>Ustaw rozmiar</strong>
-                    <p>
-                      Wpisz szerokość {size.width} i wysokość {size.height}. Tło
-                      widżetu jest przezroczyste.
-                    </p>
-                  </li>
-                  <li>
-                    <strong>Gotowe</strong>
-                    <p>
-                      Ranking odświeża się co 2 minuty. Po zmianie stylu
-                      wygeneruj nowy link.
-                    </p>
-                  </li>
-                </ol>
-              </Card>
-            )}
             <details className="settings-card import-card">
               <summary>Wczytaj ustawienia z linku</summary>
               <input
@@ -653,14 +633,14 @@ export function App() {
                 </div>
               </div>
             </div>
-            <button className="obs-tip" onClick={() => setTab("guide")}>
+            <a className="obs-tip" href="/docs/szybki-start">
               <Icon name="book" />
               <span>
                 <strong>Pierwszy raz z banerem?</strong>
                 <small>Dodaj go do OBS w kilku prostych krokach.</small>
               </span>
               <Icon name="arrow" />
-            </button>
+            </a>
             <div className="collection-note">
               <span>LEAGUE COLLECTION</span>
               <p>Zaprojektowane do Twojej następnej wygranej.</p>

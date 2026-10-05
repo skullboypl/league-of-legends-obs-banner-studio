@@ -1,6 +1,7 @@
 import express from 'express';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { registerDocs } from './docs/routes.mjs';
 
 const app = express();
 const port = Number(process.env.PORT || 8787);
@@ -116,6 +117,8 @@ app.get('/api/player', async (request, response) => {
     return response.status(status).json({ error: messages[status] || 'Nie udało się pobrać danych z Riot API.' });
   }
 });
+
+registerDocs(app);
 
 app.use(express.static(path.join(root, 'dist')));
 app.use((_request, response) => response.sendFile(path.join(root, 'dist', 'index.html')));

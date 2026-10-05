@@ -15,6 +15,17 @@ The project is an independent community tool inspired by the workflow of FACEIT 
 - Live Studio preview, local settings, settings import/share and OBS export dialog.
 - Responsive Studio layout and a transparent Browser Source widget at `/widget`.
 
+## Documentation (SSR, SEO, AEO, GEO)
+
+Public documentation is rendered on the server by Express (no client-side JavaScript needed) and lives at `/docs`. The Studio sidebar links to it at the bottom ("Instrukcja OBS" and "Dokumentacja").
+
+- Content: `server/docs/content.mjs` (single source for HTML, Markdown and JSON-LD).
+- Rendering and SEO: `server/docs/render.mjs`; routes: `server/docs/routes.mjs`.
+- **SEO**: unique titles/descriptions, canonical, hreflang, Open Graph, `sitemap.xml`, `robots.txt`.
+- **AEO**: a "Krótka odpowiedź" summary on top of each page, FAQ sections, and `FAQPage`, `HowTo`, `TechArticle` and `BreadcrumbList` JSON-LD.
+- **GEO**: `/llms.txt`, `/llms-full.txt`, a Markdown version of every page (`/docs/<slug>.md`), and explicit AI-crawler rules in `robots.txt`.
+- Set `SITE_URL` (e.g. `https://your-domain`) so canonical URLs and the sitemap use the public domain; otherwise the request host is used.
+
 ## Local development
 
 Requirements: Node.js 22+ and pnpm 9+.
