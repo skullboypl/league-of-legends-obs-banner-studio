@@ -5,6 +5,9 @@ dist/
 .env.local
 .env.*.local
 
+# Local-only notes and agent context; never publish application details here.
+docs/hidden/
+
 # Deployment credentials and local keys
 lolbanner-deploy-key
 lolbanner-deploy-key.pub
