@@ -25,10 +25,10 @@ export const defaultSettings: BannerSettings = {
   glow: true,
   animate: false,
   showStreak: true,
-  showForm: false,
-  showKda: false,
+  showForm: true,
+  showKda: true,
   showCs: false,
-  showTop: false,
+  showTop: true,
   extraView: "strip",
   theme: "classic",
 };

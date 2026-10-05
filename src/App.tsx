@@ -585,6 +585,23 @@ export function App() {
                     <i />
                   </label>
                 ))}
+                {matched &&
+                  ((settings.showTop && player.moduleErrors?.mastery !== undefined) ||
+                    ((settings.showForm || settings.showKda || settings.showCs) &&
+                      player.moduleErrors?.recent !== undefined)) && (
+                    <p className="error" role="alert">
+                      Riot nie zwrócił części danych (
+                      {[
+                        player.moduleErrors?.mastery !== undefined &&
+                          "top championi: błąd " + player.moduleErrors.mastery,
+                        player.moduleErrors?.recent !== undefined &&
+                          "forma/KDA/CS: błąd " + player.moduleErrors.recent,
+                      ]
+                        .filter(Boolean)
+                        .join(", ")}
+                      ). Błąd 403 oznacza klucz bez dostępu do tego API, 429 – limit zapytań.
+                    </p>
+                  )}
                 <div className="view-picker" role="radiogroup" aria-label="Prezentacja dodatkowych statystyk">
                   <span>Prezentacja forma / KDA / CS / top championi</span>
                   {extraViews.map(([id, name, note]) => (

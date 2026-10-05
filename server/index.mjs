@@ -188,8 +188,16 @@ app.get('/api/player', async (request, response) => {
       flex,
       mastery: mastery.status === 'fulfilled' ? mastery.value : null,
       recent: recent.status === 'fulfilled' ? recent.value : null,
+      // Kody błędów modułów opcjonalnych (np. 403 = klucz bez dostępu), aby Studio mogło to pokazać.
+      moduleErrors: {
+        ...(mastery.status === 'rejected' && { mastery: Number(mastery.reason?.status) || 0 }),
+        ...(recent.status === 'rejected' && { recent: Number(recent.reason?.status) || 0 }),
+      },
       updatedAt: new Date().toISOString(),
     };
+    for (const [name, result] of [['mastery', mastery], ['recent', recent]]) {
+      if (result.status === 'rejected') console.warn(`Riot module "${name}" failed: ${result.reason?.message || result.reason}`);
+    }
     cache.set(cacheKey, { value, expiresAt: Date.now() + 90_000 });
     response.set('Cache-Control', 'public, max-age=30');
     return response.json(value);

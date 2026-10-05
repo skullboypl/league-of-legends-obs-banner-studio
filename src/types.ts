@@ -48,6 +48,7 @@ export type PlayerData = {
   flex: RankedEntry | null;
   mastery?: { score: number; top: ChampionMastery[] } | null;
   recent?: { games: boolean[]; kda: number; csPerMin: number } | null;
+  moduleErrors?: { mastery?: number; recent?: number };
   updatedAt: string;
 };
 
