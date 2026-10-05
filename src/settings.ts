@@ -7,6 +7,7 @@ export const presets: {
   note: string;
   width: number;
   height: number;
+  animated?: boolean;
 }[] = [
   {
     id: "crest",
@@ -64,7 +65,41 @@ export const presets: {
     width: 820,
     height: 210,
   },
+  {
+    id: "deck",
+    name: "Deck",
+    note: "Karty zmieniają się same",
+    width: 520,
+    height: 128,
+    animated: true,
+  },
+  {
+    id: "orbit",
+    name: "Orbit",
+    note: "Okrągły licznik LP",
+    width: 300,
+    height: 416,
+    animated: true,
+  },
+  {
+    id: "marquee",
+    name: "Marquee",
+    note: "Przewijana taśma",
+    width: 920,
+    height: 64,
+    animated: true,
+  },
+  {
+    id: "hex",
+    name: "Hextech",
+    note: "Świecąca ramka",
+    width: 560,
+    height: 170,
+    animated: true,
+  },
 ];
+export const isAnimatedStyle = (style: BannerStyle) =>
+  Boolean(presets.find((p) => p.id === style)?.animated);
 export function sanitizeSettings(
   input: Record<string, unknown>,
 ): BannerSettings {
@@ -178,7 +213,8 @@ export function extraTiles(settings: BannerSettings) {
 }
 export function extraLayout(settings: BannerSettings) {
   const tiles = extraTiles(settings);
-  if (!tiles.length) return { height: 0, pages: [] as (typeof tiles)[] };
+  // Animowane banery same decydują, jak pokazać dodatkowe statystyki.
+  if (!tiles.length || isAnimatedStyle(settings.style)) return { height: 0, pages: [] as (typeof tiles)[] };
   const preset = presets.find((p) => p.id === settings.style)!;
   const room = preset.width - 48;
   const mode =

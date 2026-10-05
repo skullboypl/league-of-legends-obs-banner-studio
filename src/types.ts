@@ -6,7 +6,11 @@ export type BannerStyle =
   | "split"
   | "minimal"
   | "tower"
-  | "scoreboard";
+  | "scoreboard"
+  | "deck"
+  | "orbit"
+  | "marquee"
+  | "hex";
 
 export type ExtraView = "strip" | "pills" | "rings" | "cycle" | "ticker";
 

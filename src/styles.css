@@ -2238,3 +2238,54 @@ html.widget #root {
   background: transparent;
   transform-origin: top left;
 }
+
+/* Motywy: kompaktowe chipy z kolorową kropką */
+.theme-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.theme-chips button {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 12px;
+}
+.theme-chips button.active {
+  background: #29191e;
+  border-color: #4b262e;
+}
+.theme-chips.disabled {
+  opacity: 0.45;
+}
+.theme-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 1px solid #ffffff40;
+  background: #111;
+}
+.dot-classic {
+  background: linear-gradient(90deg, #c89b3c 25%, #111 25%);
+}
+.dot-glass {
+  background: linear-gradient(135deg, #ffffff80, #ffffff20);
+}
+.dot-neon {
+  background: #111;
+  border-color: #c89b3c;
+  box-shadow: 0 0 6px #c89b3c;
+}
+.dot-circuit {
+  border-radius: 2px;
+  background:
+    linear-gradient(90deg, #c89b3c66 1px, transparent 1px) 0 0 / 4px 4px,
+    linear-gradient(#c89b3c66 1px, transparent 1px) 0 0 / 4px 4px,
+    #111;
+}
+.dot-aurora {
+  background: linear-gradient(135deg, #c89b3c, #5b6cff);
+}
+.dot-amoled {
+  background: #000;
+}

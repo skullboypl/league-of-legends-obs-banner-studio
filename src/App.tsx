@@ -219,6 +219,30 @@ export function App() {
     setExportOpen(true);
     dialog.current?.showModal();
   }
+  const animatedSelected = Boolean(selected.animated);
+  const presetButton = (p: (typeof presets)[number]) => (
+    <button
+      key={p.id}
+      className={"preset " + (settings.style === p.id ? "chosen" : "")}
+      aria-pressed={settings.style === p.id}
+      onClick={() => update("style", p.id)}
+    >
+      <div className="preset-preview">
+        <BannerFrame
+          player={previewPlayer}
+          maxHeight={p.animated ? 62 : 50}
+          settings={{ ...settings, style: p.id, scale: 100, animate: false }}
+        />
+      </div>
+      <span>
+        <strong>{p.name}</strong>
+        <small>
+          {p.width} × {p.height}
+        </small>
+      </span>
+      {settings.style === p.id && <b className="preset-check">✓</b>}
+    </button>
+  );
   const range = (
     key: "radius" | "opacity" | "scale",
     label: string,
@@ -415,7 +439,7 @@ export function App() {
                     </span>
                   </div>
                 </Card>
-                <Card title="Wygląd banera" note="8 UKŁADÓW">
+                <Card title="Wygląd banera" note={presets.length + " UKŁADÓW"}>
                   <button
                     className="selected-layout"
                     onClick={() => setTab("style")}
@@ -453,78 +477,47 @@ export function App() {
               <>
                 <Card title="Wybierz układ" note="LEAGUE COLLECTION">
                   <div className="preset-grid">
-                    {presets.map((p) => (
-                      <button
-                        key={p.id}
-                        className={
-                          "preset " + (settings.style === p.id ? "chosen" : "")
-                        }
-                        aria-pressed={settings.style === p.id}
-                        onClick={() => update("style", p.id)}
-                      >
-                        <div className="preset-preview">
-                          <BannerFrame
-                            player={previewPlayer}
-                            maxHeight={50}
-                            settings={{
-                              ...settings,
-                              style: p.id,
-                              scale: 100,
-                              animate: false,
-                            }}
-                          />
-                        </div>
-                        <span>
-                          <strong>{p.name}</strong>
-                          <small>
-                            {p.width} × {p.height}
-                          </small>
-                        </span>
-                        {settings.style === p.id && (
-                          <b className="preset-check">✓</b>
-                        )}
-                      </button>
-                    ))}
+                    {presets.filter((p) => !p.animated).map(presetButton)}
                   </div>
                 </Card>
-                <Card title="Motyw banera" note="6 STYLÓW">
-                  <div className="theme-grid">
+                <Card title="Animowane banery" note="INNY WYGLĄD">
+                  <p className="hint">
+                    Osobne banery z własną budową i ruchem. Motywy ich nie
+                    dotyczą, ale kolory, krój pisma i widoczne elementy tak.
+                  </p>
+                  <div className="preset-grid">
+                    {presets.filter((p) => p.animated).map(presetButton)}
+                  </div>
+                </Card>
+                <Card title="Motyw banera" note="UKŁADY KLASYCZNE">
+                  <div
+                    className={
+                      "theme-chips" + (animatedSelected ? " disabled" : "")
+                    }
+                    role="radiogroup"
+                    aria-label="Motyw banera"
+                  >
                     {themes.map((t) => (
                       <button
                         key={t.id}
-                        className={
-                          "preset " + (settings.theme === t.id ? "chosen" : "")
-                        }
-                        aria-pressed={settings.theme === t.id}
+                        role="radio"
+                        aria-checked={settings.theme === t.id}
+                        disabled={animatedSelected}
+                        className={settings.theme === t.id ? "active" : ""}
+                        title={t.note}
                         onClick={() => update("theme", t.id)}
                       >
-                        <div className="preset-preview">
-                          <BannerFrame
-                            player={previewPlayer}
-                            maxHeight={50}
-                            settings={{
-                              ...settings,
-                              theme: t.id,
-                              scale: 100,
-                              animate: false,
-                              extraView: "strip",
-                              showForm: false,
-                              showKda: false,
-                              showCs: false,
-                              showTop: false,
-                            }}
-                          />
-                        </div>
-                        <span>
-                          <strong>{t.name}</strong>
-                          <small>{t.note}</small>
-                        </span>
-                        {settings.theme === t.id && (
-                          <b className="preset-check">✓</b>
-                        )}
+                        <i className={"theme-dot dot-" + t.id} />
+                        {t.name}
                       </button>
                     ))}
                   </div>
+                  {animatedSelected && (
+                    <p className="hint">
+                      Wybrany baner animowany ma własny wygląd. Wybierz układ
+                      klasyczny, aby użyć motywów.
+                    </p>
+                  )}
                 </Card>
                 <Card title="Kolor i wykończenie">
                   <div className="swatches">
