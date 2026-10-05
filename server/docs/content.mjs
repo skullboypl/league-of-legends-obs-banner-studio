@@ -171,7 +171,7 @@ export const pages = [
           },
           { table: { head: ['Układ', 'Kod stylu', 'Opis', 'Wymiary (px)'], rows: sizeRows } },
           {
-            p: 'Jeśli włączysz formę, KDA, CS lub top championów, do wysokości dochodzi panel pod banerem (ok. 55–100 px, zależnie od układu). Przy skali innej niż 100% pomnóż wymiary przez skalę (np. Prime przy 120% to 984 × 216). Okno eksportu liczy to za Ciebie. Szczegóły w [układach banerów](/docs/uklady-banerow).',
+            p: 'Jeśli włączysz formę, KDA, CS lub top championów, do wysokości dochodzi stopka banera (ok. 56–120 px, zależnie od układu i sposobu prezentacji). Przy skali innej niż 100% pomnóż wymiary przez skalę (np. Prime przy 120% to 984 × 216). Okno eksportu liczy to za Ciebie. Szczegóły w [układach banerów](/docs/uklady-banerow).',
           },
         ],
       },
@@ -406,7 +406,7 @@ export const pages = [
             },
           },
           {
-            p: 'Forma, KDA i CS liczone są z ostatnich 10 gier wybranej kolejki (Solo/Duo albo Flex), a top championi z punktów mastery. Te cztery elementy pojawiają się w osobnym panelu pod banerem, więc **wysokość źródła w OBS rośnie** – aktualne wymiary zawsze pokazuje okno „Generuj link OBS”. Seria wygranych i seria awansowa pojawiają się przy randze tylko wtedy, gdy gracz ją ma.',
+            p: 'Forma, KDA i CS liczone są z ostatnich 10 gier wybranej kolejki (Solo/Duo albo Flex), a top championi z punktów mastery. Te cztery elementy trafiają do stopki w obrębie tego samego banera, a prezentację wybierasz w zakładce Statystyki: **Stopka** i **Kapsuły** (statyczne) oraz **Rotacja** (stopka zmienia strony co ok. 4 sekundy) i **Taśma** (przewijana taśma) – oba animowane. Stopka dodaje do **wysokości źródła w OBS** ok. 56–120 px – aktualne wymiary zawsze pokazuje okno „Generuj link OBS”. Seria wygranych i seria awansowa pojawiają się przy randze tylko wtedy, gdy gracz ją ma.',
           },
           { note: 'Pasek LP jest ukryty dla rang Master, Grandmaster i Challenger, bo tam LP nie ma górnego limitu 100.' },
         ],
@@ -465,6 +465,7 @@ export const pages = [
                 ['`queue`', '`solo` lub `flex`', '`solo`'],
                 ['`style`', '`crest`, `lane`, `compact`, `card`, `split`, `minimal`, `tower`, `scoreboard`', '`crest`'],
                 ['`font`', '`sans`, `condensed`, `mono`', '`sans`'],
+                ['`extraView`', 'prezentacja formy, KDA, CS i top championów: `strip`, `pills`, `cycle`, `ticker`', '`strip`'],
               ],
             },
           },

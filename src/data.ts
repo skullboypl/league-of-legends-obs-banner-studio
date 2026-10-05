@@ -29,6 +29,7 @@ export const defaultSettings: BannerSettings = {
   showKda: false,
   showCs: false,
   showTop: false,
+  extraView: "strip",
 };
 
 export const samplePlayer: PlayerData = {

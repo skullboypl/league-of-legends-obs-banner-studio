@@ -94,6 +94,8 @@ export function sanitizeSettings(
   if (presets.some((p) => p.id === input.style))
     result.style = input.style as BannerStyle;
   if (input.queue === "flex") result.queue = "flex";
+  if (extraViews.some(([id]) => id === input.extraView))
+    result.extraView = input.extraView as BannerSettings["extraView"];
   if (input.font === "mono" || input.font === "condensed")
     result.font = input.font;
   return result;
@@ -137,41 +139,68 @@ export function studioSettings() {
     return { ...defaultSettings };
   }
 }
-// Panel z dodatkowymi statystykami pod banerem: szerokości kafelków i układ wierszy.
-const extraTileWidths = { showForm: 78, showKda: 36, showCs: 52, showTop: 86 } as const;
-const EXTRA_GAP = 22;
-const EXTRA_ROW = 36;
-const EXTRA_ROW_GAP = 10;
+// Stopka z dodatkowymi statystykami wewnątrz banera. Szerokości kafelków (px) służą do
+// policzenia wierszy lub stron, żeby wymiary źródła OBS były przewidywalne.
+const extraTileWidths = {
+  strip: { showForm: 98, showKda: 36, showCs: 48, showTop: 86 },
+  pills: { showForm: 162, showKda: 72, showCs: 92, showTop: 186 },
+} as const;
+const EXTRA_GAP = { strip: 22, pills: 14 } as const;
+const EXTRA_ROW = { strip: 36, pills: 24 } as const;
+const EXTRA_ROW_GAP = 8;
 const EXTRA_PADDING = 10;
-const EXTRA_MARGIN = 6;
+export const extraViews = [
+  ["strip", "Stopka", "Statyczne kafelki w stopce banera"],
+  ["pills", "Kapsuły", "Statyczne, zwarte etykiety w stopce"],
+  ["cycle", "Rotacja", "Animowane: stopka zmienia strony co kilka sekund"],
+  ["ticker", "Taśma", "Animowane: przewijana taśma statystyk"],
+] as const;
 export function extraTiles(settings: BannerSettings) {
-  return (Object.keys(extraTileWidths) as (keyof typeof extraTileWidths)[]).filter(
-    (key) => settings[key],
-  );
+  return (
+    Object.keys(extraTileWidths.strip) as (keyof typeof extraTileWidths.strip)[]
+  ).filter((key) => settings[key]);
 }
-export function extraPanelHeight(settings: BannerSettings) {
+export function extraLayout(settings: BannerSettings) {
   const tiles = extraTiles(settings);
-  if (!tiles.length) return 0;
+  if (!tiles.length) return { height: 0, pages: [] as (typeof tiles)[] };
   const preset = presets.find((p) => p.id === settings.style)!;
-  const room = preset.width - 40;
-  let rows = 1;
+  const room = preset.width - 48;
+  const mode = settings.extraView === "pills" ? "pills" : "strip";
+  const widths = extraTileWidths[mode];
+  const gap = EXTRA_GAP[mode];
+  const rows: (typeof tiles)[] = [[]];
   let used = 0;
   for (const key of tiles) {
-    const width = extraTileWidths[key];
-    if (used && used + EXTRA_GAP + width > room) {
-      rows += 1;
-      used = width;
-    } else used += (used ? EXTRA_GAP : 0) + width;
+    const row = rows[rows.length - 1];
+    if (row.length && used + gap + widths[key] > room) {
+      rows.push([key]);
+      used = widths[key];
+    } else {
+      row.push(key);
+      used += (row.length > 1 ? gap : 0) + widths[key];
+    }
   }
-  return EXTRA_PADDING * 2 + rows * EXTRA_ROW + (rows - 1) * EXTRA_ROW_GAP;
+  if (settings.extraView === "cycle" || settings.extraView === "ticker") {
+    // Jeden stały wiersz: strony rotacji albo przewijana taśma.
+    return {
+      height: EXTRA_PADDING * 2 + EXTRA_ROW.strip,
+      pages: settings.extraView === "cycle" ? rows : [tiles],
+    };
+  }
+  return {
+    height:
+      EXTRA_PADDING * 2 +
+      rows.length * EXTRA_ROW[mode] +
+      (rows.length - 1) * EXTRA_ROW_GAP,
+    pages: [tiles],
+  };
 }
-// Rozmiar bazowy (skala 100%) razem z panelem dodatkowych statystyk.
+// Rozmiar bazowy (skala 100%) razem ze stopką dodatkowych statystyk.
 export function baseSize(settings: BannerSettings) {
   const preset = presets.find((p) => p.id === settings.style)!;
-  const extra = extraPanelHeight(settings);
   return {
     width: preset.width,
-    height: preset.height + (extra ? extra + EXTRA_MARGIN : 0),
+    height: preset.height + extraLayout(settings).height,
   };
 }
 export function dimensions(settings: BannerSettings) {

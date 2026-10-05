@@ -1,6 +1,6 @@
 import { CSSProperties, ReactNode, useEffect, useRef, useState } from "react";
 import type { BannerSettings, PlayerData } from "./types";
-import { baseSize, dimensions, extraPanelHeight } from "./settings";
+import { baseSize, dimensions, extraLayout } from "./settings";
 
 export function RankEmblem({ tier = "UNRANKED" }: { tier?: string }) {
   return (
@@ -59,8 +59,8 @@ export function PlayerBanner({
       value: ranked ? String(games) : "—",
     },
   ].filter(Boolean) as { label: string; value: string }[];
-  const extras = [
-    settings.showForm && {
+  const extraTile = {
+    showForm: {
       label: "FORMA",
       value: recent?.games.length ? (
         <span className="form-pips" aria-label="Ostatnie gry">
@@ -72,15 +72,15 @@ export function PlayerBanner({
         "—"
       ),
     },
-    settings.showKda && {
+    showKda: {
       label: "KDA",
       value: recent?.games.length ? recent.kda.toFixed(1) : "—",
     },
-    settings.showCs && {
+    showCs: {
       label: "CS / MIN",
       value: recent?.games.length ? recent.csPerMin.toFixed(1) : "—",
     },
-    settings.showTop && {
+    showTop: {
       label: "TOP CHAMPIONI",
       value: top.length ? (
         <span className="top-champs">
@@ -98,22 +98,26 @@ export function PlayerBanner({
         "—"
       ),
     },
-  ].filter(Boolean) as { label: string; value: ReactNode }[];
-  const panelHeight = extraPanelHeight(settings);
-  const themeStyle = {
-    "--accent": settings.accent,
-    "--banner-bg":
-      settings.background +
-      Math.round(settings.opacity * 2.55)
-        .toString(16)
-        .padStart(2, "0"),
-    "--ink": settings.textColor,
-    "--radius": settings.radius + "px",
-  } as CSSProperties;
-  const themeClass =
-    " font-" + settings.font + (settings.glow ? " has-glow" : "") + (settings.animate ? " animated" : "");
+  } as Record<string, { label: string; value: ReactNode }>;
+  const foot = extraLayout(settings);
+  const [page, setPage] = useState(0);
+  const rotating = settings.extraView === "cycle" && foot.pages.length > 1;
+  useEffect(() => {
+    if (!rotating) return setPage(0);
+    const timer = window.setInterval(
+      () => setPage((value) => (value + 1) % foot.pages.length),
+      4200,
+    );
+    return () => window.clearInterval(timer);
+  }, [rotating, foot.pages.length]);
+  const tileNodes = (keys: string[], suffix = "") =>
+    keys.map((key) => (
+      <div key={key + suffix}>
+        <small>{extraTile[key].label}</small>
+        <strong>{extraTile[key].value}</strong>
+      </div>
+    ));
   return (
-    <div className="banner-stack">
     <article
       className={
         "player-banner banner-" +
@@ -121,7 +125,8 @@ export function PlayerBanner({
         " font-" +
         settings.font +
         (settings.glow ? " has-glow" : "") +
-        (settings.animate ? " animated" : "")
+        (settings.animate ? " animated" : "") +
+        (foot.height ? " with-foot" : "")
       }
       style={
         {
@@ -133,6 +138,7 @@ export function PlayerBanner({
               .padStart(2, "0"),
           "--ink": settings.textColor,
           "--radius": settings.radius + "px",
+          "--foot-h": foot.height + "px",
         } as CSSProperties
       }
     >
@@ -219,21 +225,33 @@ export function PlayerBanner({
           <i style={{ width: Math.min(ranked.leaguePoints, 100) + "%" }} />
         </div>
       )}
+      {foot.height > 0 && (
+        <div className={"banner-foot view-" + settings.extraView}>
+          {settings.extraView === "ticker" ? (
+            <div className="foot-track" aria-label="Dodatkowe statystyki">
+              {["a", "b", "c", "d"].map((copy, index) => (
+                <div key={copy} aria-hidden={index ? "true" : undefined}>
+                  {tileNodes(foot.pages[0], copy)}
+                </div>
+              ))}
+            </div>
+          ) : (
+            <>
+              <div className="foot-page" key={page}>
+                {tileNodes(foot.pages[Math.min(page, foot.pages.length - 1)])}
+              </div>
+              {rotating && (
+                <span className="foot-dots" aria-hidden="true">
+                  {foot.pages.map((_, index) => (
+                    <i key={index} className={index === page ? "on" : ""} />
+                  ))}
+                </span>
+              )}
+            </>
+          )}
+        </div>
+      )}
     </article>
-    {panelHeight > 0 && (
-      <div
-        className={"banner-extra" + themeClass}
-        style={{ ...themeStyle, height: panelHeight }}
-      >
-        {extras.map((stat) => (
-          <div key={stat.label}>
-            <small>{stat.label}</small>
-            <strong>{stat.value}</strong>
-          </div>
-        ))}
-      </div>
-    )}
-    </div>
   );
 }
 export function BannerFrame({

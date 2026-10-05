@@ -8,6 +8,8 @@ export type BannerStyle =
   | "tower"
   | "scoreboard";
 
+export type ExtraView = "strip" | "pills" | "cycle" | "ticker";
+
 export type RankedEntry = {
   queueType: string;
   tier: string;
@@ -70,4 +72,5 @@ export type BannerSettings = {
   showKda: boolean;
   showCs: boolean;
   showTop: boolean;
+  extraView: ExtraView;
 };

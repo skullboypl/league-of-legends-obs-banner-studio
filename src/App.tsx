@@ -5,6 +5,7 @@ import { defaultSettings, platforms, samplePlayer } from "./data";
 import { BannerFrame, RankEmblem } from "./PlayerBanner";
 import {
   dimensions,
+  extraViews,
   presets,
   settingsFromUrl,
   settingsQuery,
@@ -544,6 +545,21 @@ export function App() {
                     <i />
                   </label>
                 ))}
+                <div className="view-picker" role="radiogroup" aria-label="Prezentacja dodatkowych statystyk">
+                  <span>Prezentacja forma / KDA / CS / top championi</span>
+                  {extraViews.map(([id, name, note]) => (
+                    <button
+                      key={id}
+                      role="radio"
+                      aria-checked={settings.extraView === id}
+                      className={settings.extraView === id ? "active" : ""}
+                      onClick={() => update("extraView", id)}
+                    >
+                      <strong>{name}</strong>
+                      <small>{note}</small>
+                    </button>
+                  ))}
+                </div>
               </Card>
             )}
             <details className="settings-card import-card">
