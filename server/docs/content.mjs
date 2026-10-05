@@ -45,6 +45,10 @@ export const layouts = [
   ['orbit', 'Orbit (animowany)', 'Okrągły licznik LP', 300, 448],
   ['marquee', 'Marquee (animowany)', 'Przewijana taśma transmisyjna', 920, 64],
   ['hex', 'Hextech (animowany)', 'Obracająca się świecąca ramka', 560, 170],
+  ['tabs', 'Tabs (animowany)', 'Zakładki zmieniają treść', 560, 150],
+  ['radar', 'Radar (animowany)', 'HUD z echami ostatnich gier', 500, 170],
+  ['flip', 'Flip (animowany)', 'Obracane karty jak tablica odlotów', 640, 118],
+  ['ladder', 'Ladder (animowany)', 'Drabina wszystkich rang', 780, 128],
 ];
 
 const sizeRows = layouts.map(([id, name, note, w, h]) => [`**${name}**`, `\`${id}\``, note, `${w} × ${h}`]);
@@ -81,7 +85,7 @@ export const pages = [
             ol: [
               'Otwórz [Studio](/) i w zakładce **Podstawowe** wpisz Riot ID w formacie `Nazwa#TAG`.',
               'Wybierz serwer (np. EU West) i kolejkę: Ranked Solo / Duo albo Ranked Flex, a potem kliknij **Pobierz dane gracza**.',
-              'W zakładce **Wygląd** wybierz jeden z 12 układów (8 klasycznych i 4 animowane), kolory, krój pisma i efekty. Podgląd na żywo pokazuje efekt od razu.',
+              'W zakładce **Wygląd** wybierz jeden z 16 układów (8 klasycznych i 8 animowanych), kolory, krój pisma i efekty. Podgląd na żywo pokazuje efekt od razu.',
               'W zakładce **Statystyki** włącz lub wyłącz poszczególne elementy: LP, win rate, bilans, liczbę meczów, pasek LP.',
               'Kliknij **Generuj link OBS**, skopiuj adres i wklej go w OBS jako źródło „Przeglądarka” z podanymi wymiarami. Szczegóły znajdziesz w [instrukcji dla OBS Studio](/docs/obs-studio).',
             ],
@@ -287,12 +291,12 @@ export const pages = [
   {
     slug: 'uklady-banerow',
     group: 'config',
-    title: 'Układy banerów LoL: 12 stylów i ich wymiary w OBS',
+    title: 'Układy banerów LoL: 16 stylów i ich wymiary w OBS',
     h1: 'Układy banerów',
     description:
-      'Porównanie 12 układów banera rankingu League of Legends: 8 klasycznych (Prime, Broadcast, Compact, Showcase, Split, Minimal, Tower, Scoreboard) i 4 animowane (Deck, Orbit, Marquee, Hextech) – z wymiarami w pikselach.',
+      'Porównanie 16 układów banera rankingu League of Legends: 8 klasycznych (Prime, Broadcast, Compact, Showcase, Split, Minimal, Tower, Scoreboard) i 8 animowanych (Deck, Orbit, Marquee, Hextech, Tabs, Radar, Flip, Ladder) – z wymiarami w pikselach.',
     summary:
-      'Banner Studio ma 12 układów: 8 klasycznych (Prime, Broadcast, Compact, Showcase, Split, Minimal, Tower, Scoreboard) i 4 animowane (Deck, Orbit, Marquee, Hextech). Wymiary przy skali 100% wahają się od 920 × 64 px (Marquee) do 300 × 448 px (Orbit).',
+      'Banner Studio ma 16 układów: 8 klasycznych (Prime, Broadcast, Compact, Showcase, Split, Minimal, Tower, Scoreboard) i 8 animowanych (Deck, Orbit, Marquee, Hextech, Tabs, Radar, Flip, Ladder). Wymiary przy skali 100% wahają się od 920 × 64 px (Marquee) do 300 × 448 px (Orbit).',
     sections: [
       {
         id: 'lista',
@@ -307,7 +311,7 @@ export const pages = [
         title: 'Banery animowane',
         blocks: [
           {
-            p: 'Cztery osobne banery z własną budową i ruchem. Kolory, krój pisma i przełączniki elementów działają, a motywy nie (banery mają własny wygląd). Dodatkowe statystyki (forma, KDA, CS, top championi) są wbudowane w sam baner.',
+            p: 'Osiem osobnych banerów z własną budową i ruchem. Kolory, krój pisma i przełączniki elementów działają, a motywy nie (banery mają własny wygląd). Dodatkowe statystyki (forma, KDA, CS, top championi) są wbudowane w sam baner.',
           },
           {
             ul: [
@@ -315,6 +319,10 @@ export const pages = [
               '**Orbit** – okrągły licznik z animowanym łukiem LP i obracającym się pierścieniem; statystyki jako chipy pod spodem.',
               '**Marquee** – wąska taśma transmisyjna z płynnie przewijanymi statystykami.',
               '**Hextech** – sześciokątny awatar, obracająca się świecąca ramka i połysk co kilka sekund.',
+              '**Tabs** – pasek zakładek (Profil, Statystyki, Forma, Championi) z przesuwanym podkreśleniem; każda zakładka pokazuje inną treść.',
+              '**Radar** – HUD z obracającym się radarem, na którym ostatnie gry rozbłyskają jako zielone (wygrana) i czerwone (porażka) echa.',
+              '**Flip** – karty obracane jak tablica odlotów; każda ma dwie strony z prawdziwymi danymi.',
+              '**Ladder** – drabina wszystkich rang od Iron do Challenger z animowanym wypełnieniem i pulsującym markerem na Twojej randze.',
             ],
           },
         ],
@@ -346,7 +354,7 @@ export const pages = [
       },
     ],
     faq: [
-      ['Ile układów banera ma LoL Banner Studio?', 'Dwanaście: osiem klasycznych (Prime, Broadcast, Compact, Showcase, Split, Minimal, Tower, Scoreboard) i cztery animowane (Deck, Orbit, Marquee, Hextech).'],
+      ['Ile układów banera ma LoL Banner Studio?', 'Szesnaście: osiem klasycznych (Prime, Broadcast, Compact, Showcase, Split, Minimal, Tower, Scoreboard) i osiem animowanych (Deck, Orbit, Marquee, Hextech, Tabs, Radar, Flip, Ladder).'],
       ['Jaki układ najlepiej pasuje obok kamerki?', 'Compact (620 × 140) lub Minimal (640 × 120), bo zajmują najmniej miejsca.'],
       ['W jakim zakresie można skalować baner?', 'Od 60% do 160%. Wymiary źródła w OBS to wymiary bazowe pomnożone przez skalę.'],
     ],
@@ -509,7 +517,7 @@ export const pages = [
                 ['`riotId`', 'Nazwa#TAG (maks. 100 znaków)', 'przykładowy gracz'],
                 ['`platform`', 'kod serwera, np. `euw1` ([lista](/docs/serwery-i-riot-id))', '`eun1`'],
                 ['`queue`', '`solo` lub `flex`', '`solo`'],
-                ['`style`', '`crest`, `lane`, `compact`, `card`, `split`, `minimal`, `tower`, `scoreboard`, `deck`, `orbit`, `marquee`, `hex`', '`crest`'],
+                ['`style`', '`crest`, `lane`, `compact`, `card`, `split`, `minimal`, `tower`, `scoreboard`, `deck`, `orbit`, `marquee`, `hex`, `tabs`, `radar`, `flip`, `ladder`', '`crest`'],
                 ['`font`', '`sans`, `condensed`, `mono`', '`sans`'],
                 ['`extraView`', 'prezentacja formy, KDA, CS i top championów: `strip`, `pills`, `rings`, `cycle`, `ticker`', '`strip`'],
                 ['`theme`', 'motyw: `classic`, `glass`, `neon`, `circuit`, `aurora`, `amoled`, `avatarbg`', '`classic`'],
@@ -789,7 +797,7 @@ export const pages = [
       ['Czy działa ze Streamlabs?', 'Tak, jako „Źródło przeglądarki”. Zobacz [instrukcję Streamlabs](/docs/streamlabs).'],
       ['Jak często odświeża się ranga?', 'Widżet odświeża dane co 2 minuty, a serwer buforuje odpowiedzi Riot API przez ok. 90 sekund.'],
       ['Jakie dane pokazuje baner?', 'Rangę i emblemat, LP, win rate, wygrane i porażki, liczbę meczów, pasek LP, serie, formę z 10 ostatnich gier, KDA, CS na minutę, top championów, poziom konta, ikonę profilu, tag i serwer.'],
-      ['Ile jest układów banera?', 'Dwanaście, w tym cztery animowane. Zobacz [układy banerów](/docs/uklady-banerow).'],
+      ['Ile jest układów banera?', 'Szesnaście, w tym osiem animowanych. Zobacz [układy banerów](/docs/uklady-banerow).'],
       ['Które serwery są obsługiwane?', 'Szesnaście serwerów LoL, m.in. euw1, eun1, na1, kr. Pełna lista: [serwery i Riot ID](/docs/serwery-i-riot-id).'],
       ['Czy mój klucz Riot API jest bezpieczny?', 'Tak. Klucz jest tylko na serwerze i nie trafia do przeglądarki ani do linku. Zobacz [prywatność i bezpieczeństwo](/docs/prywatnosc-i-bezpieczenstwo).'],
       ['Mogę uruchomić własną instancję?', 'Tak. Projekt ma gotową konfigurację do CapRover (Dockerfile, Nginx, serwer Node). Potrzebujesz własnego klucza Riot API.'],

@@ -62,6 +62,8 @@ function facts(player: PlayerData, settings: BannerSettings) {
     winrate,
     apex,
     atoms,
+    recent,
+    top,
     tier: ranked ? ranked.tier + (apex ? "" : " " + ranked.rank) : "UNRANKED",
     lp: ranked ? ranked.leaguePoints : null,
     progress: ranked && !apex ? Math.min(ranked.leaguePoints, 100) : apex ? 100 : 0,
@@ -103,6 +105,8 @@ function rootProps(settings: BannerSettings, name: string) {
       "--ink": settings.textColor,
       "--radius": settings.radius + "px",
       "--speed": settings.speed / 100,
+      "--period": 5 / (settings.speed / 100) + "s",
+      "--flip-period": 9 / (settings.speed / 100) + "s",
     } as CSSProperties,
   };
 }
@@ -319,8 +323,249 @@ function Hex({ player, settings }: Props) {
   );
 }
 
+/* TABS: pasek zakładek z przesuwanym podkreśleniem; każda zakładka to inna treść. */
+const TAB_MS = 4800;
+function formatPoints(points: number) {
+  return points >= 1000 ? Math.round(points / 1000) + "k" : String(points);
+}
+function Tabs({ player, settings }: Props) {
+  const f = facts(player, settings);
+  const pick = (...keys: string[]) => f.atoms.filter((atom) => keys.includes(atom.key));
+  const pages: { id: string; label: string; body: ReactNode }[] = [
+    {
+      id: "profile",
+      label: "PROFIL",
+      body: (
+        <div className="tabs-profile">
+          <Avatar player={player} settings={settings} />
+          <Identity player={player} settings={settings} />
+          {settings.showRank && (
+            <div className="ab-rank">
+              <RankEmblem tier={f.ranked?.tier} />
+              <span>{f.tier}</span>
+            </div>
+          )}
+          {settings.showLP && (
+            <strong className="tabs-lp">
+              {f.lp ?? "—"} <small>LP</small>
+            </strong>
+          )}
+        </div>
+      ),
+    },
+  ];
+  const stats = pick("wr", "rec", "games", "mastery");
+  if (stats.length)
+    pages.push({
+      id: "stats",
+      label: "STATYSTYKI",
+      body: <div className="tabs-grid">{stats.map(atomNode)}</div>,
+    });
+  const form = pick("form", "kda", "cs");
+  if (form.length)
+    pages.push({
+      id: "form",
+      label: "FORMA",
+      body: <div className="tabs-grid big">{form.map(atomNode)}</div>,
+    });
+  if (settings.showTop && f.top.length)
+    pages.push({
+      id: "champs",
+      label: "CHAMPIONI",
+      body: (
+        <div className="tabs-champs">
+          {f.top.map((champion) => (
+            <div key={champion.championId}>
+              <span className="ab-champ-icon">
+                {champion.iconUrl ? <img src={champion.iconUrl} alt="" /> : champion.name.slice(0, 1)}
+              </span>
+              <div>
+                <strong>{champion.name}</strong>
+                <small>
+                  M{champion.level} · {formatPoints(champion.points)} pkt
+                </small>
+              </div>
+            </div>
+          ))}
+        </div>
+      ),
+    });
+  const [index, setIndex] = useState(0);
+  const tabMs = TAB_MS / (settings.speed / 100);
+  useEffect(() => {
+    if (pages.length < 2) return setIndex(0);
+    const timer = window.setInterval(() => setIndex((value) => (value + 1) % pages.length), tabMs);
+    return () => window.clearInterval(timer);
+  }, [pages.length, tabMs]);
+  const at = Math.min(index, pages.length - 1);
+  return (
+    <article {...rootProps(settings, "tabs")}>
+      <nav className="tabs-nav" aria-hidden="true">
+        {pages.map((page, i) => (
+          <span key={page.id} className={i === at ? "on" : ""}>
+            {page.label}
+          </span>
+        ))}
+        <i style={{ width: 100 / pages.length + "%", transform: "translateX(" + at * 100 + "%)" }} />
+      </nav>
+      <div className="tabs-body" key={at}>
+        {pages[at].body}
+      </div>
+    </article>
+  );
+}
+function atomNode(atom: Atom) {
+  return (
+    <div key={atom.key}>
+      <small>{atom.label}</small>
+      <strong>{atom.value}</strong>
+    </div>
+  );
+}
+
+/* RADAR: HUD z obracającym się radarem; ostatnie gry to echa, które rozbłyskają przy przejściu wskazówki. */
+function Radar({ player, settings }: Props) {
+  const f = facts(player, settings);
+  const games = (f.recent?.games ?? []).slice(0, 10);
+  return (
+    <article {...rootProps(settings, "radar")}>
+      <div className="radar-disc" aria-hidden="true">
+        <i className="radar-ring r1" />
+        <i className="radar-ring r2" />
+        <i className="radar-cross" />
+        <i className="radar-sweep" />
+        {games.map((win, i) => {
+          const angle = (i / games.length) * Math.PI * 2;
+          const radius = i % 2 ? 0.3 : 0.4;
+          return (
+            <b
+              key={i}
+              className={"radar-blip " + (win ? "win" : "loss")}
+              style={{
+                left: 50 + Math.sin(angle) * radius * 100 + "%",
+                top: 50 - Math.cos(angle) * radius * 100 + "%",
+                animationDelay: "calc(var(--period) * " + i / games.length + ")",
+              }}
+            />
+          );
+        })}
+        <span className="radar-core">{settings.showRank && <RankEmblem tier={f.ranked?.tier} />}</span>
+      </div>
+      <div className="radar-hud">
+        <i className="radar-scan" aria-hidden="true" />
+        <div className="radar-name">
+          <h2>{player.gameName}</h2>
+          {settings.showTag && <span>#{player.tagLine}</span>}
+          {settings.showRegion && <b>{serverLabel(player.platform)}</b>}
+          {settings.showLevel && <em>LVL {player.summonerLevel}</em>}
+        </div>
+        <div className="radar-rank">
+          {settings.showRank && <span>{f.tier}</span>}
+          {settings.showLP && (
+            <strong>
+              {f.lp ?? "—"} <small>LP</small>
+            </strong>
+          )}
+          {f.streak && <em className="ab-chip">SERIA</em>}
+        </div>
+        {f.atoms.length > 0 && <div className="radar-stats">{f.atoms.slice(0, 4).map(atomNode)}</div>}
+      </div>
+    </article>
+  );
+}
+
+/* FLIP: karty obracane jak tablica odlotów; każda ma dwie strony z prawdziwymi danymi. */
+function Flip({ player, settings }: Props) {
+  const f = facts(player, settings);
+  const faces: Atom[] = [
+    ...(settings.showLP ? [{ key: "lp", label: "LP", value: f.lp ?? "—" }] : []),
+    ...(settings.showRank ? [{ key: "tier", label: "RANGA", value: f.tier }] : []),
+    ...f.atoms,
+  ];
+  const cards: Atom[][] = [];
+  for (let i = 0; i < faces.length && cards.length < 4; i += 2) cards.push(faces.slice(i, i + 2));
+  return (
+    <article {...rootProps(settings, "flip")}>
+      <Avatar player={player} settings={settings} />
+      <Identity player={player} settings={settings} />
+      <div className="flip-board">
+        {cards.map((pair, index) => (
+          <div className="flip-card" key={pair[0].key}>
+            <div
+              className={"flip-inner" + (pair.length > 1 ? " flips" : "")}
+              style={{ animationDelay: "calc(var(--flip-period) * " + index * 0.12 + ")" }}
+            >
+              {pair.map((atom, side) => (
+                <div className={"flip-face " + (side ? "back" : "front")} key={atom.key}>
+                  <small>{atom.label}</small>
+                  <strong>{atom.value}</strong>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </article>
+  );
+}
+
+/* LADDER: drabina wszystkich rang z animowanym wypełnieniem i pulsującym markerem. */
+const LADDER = ["IRON", "BRONZE", "SILVER", "GOLD", "PLATINUM", "EMERALD", "DIAMOND", "MASTER", "GRANDMASTER", "CHALLENGER"];
+const LADDER_SHORT = ["IRN", "BRZ", "SLV", "GLD", "PLT", "EME", "DIA", "MST", "GM", "CH"];
+function Ladder({ player, settings }: Props) {
+  const f = facts(player, settings);
+  const tierIndex = f.ranked ? LADDER.indexOf(f.ranked.tier) : -1;
+  const inTier = f.apex ? 0.5 : f.progress / 100;
+  const position = tierIndex < 0 ? 0 : ((tierIndex + inTier) / LADDER.length) * 100;
+  return (
+    <article {...rootProps(settings, "ladder")}>
+      <div className="ladder-top">
+        <Avatar player={player} settings={settings} />
+        <Identity player={player} settings={settings} />
+        <div className="ladder-rank">
+          {settings.showRank && <span>{f.tier}</span>}
+          {settings.showLP && (
+            <strong>
+              {f.lp ?? "—"} <small>LP</small>
+            </strong>
+          )}
+        </div>
+        {f.atoms.length > 0 && <div className="ladder-stats">{f.atoms.slice(0, 4).map(atomNode)}</div>}
+      </div>
+      <div className="ladder-track">
+        {LADDER.map((tier, i) => (
+          <div key={tier} className={"ladder-cell" + (i === tierIndex ? " here" : "")}>
+            <i
+              style={
+                {
+                  "--fill": i < tierIndex ? 1 : i === tierIndex ? inTier : 0,
+                  animationDelay: i * 90 + "ms",
+                } as CSSProperties
+              }
+            />
+            <small>{LADDER_SHORT[i]}</small>
+          </div>
+        ))}
+        {tierIndex >= 0 && (
+          <span className="ladder-marker" style={{ left: position + "%" }}>
+            <RankEmblem tier={f.ranked?.tier} />
+          </span>
+        )}
+      </div>
+    </article>
+  );
+}
+
 export function AnimatedBanner(props: Props) {
   switch (props.settings.style) {
+    case "tabs":
+      return <Tabs {...props} />;
+    case "radar":
+      return <Radar {...props} />;
+    case "flip":
+      return <Flip {...props} />;
+    case "ladder":
+      return <Ladder {...props} />;
     case "orbit":
       return <Orbit {...props} />;
     case "marquee":

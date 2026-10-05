@@ -97,6 +97,38 @@ export const presets: {
     height: 170,
     animated: true,
   },
+  {
+    id: "tabs",
+    name: "Tabs",
+    note: "Zakładki zmieniają treść",
+    width: 560,
+    height: 150,
+    animated: true,
+  },
+  {
+    id: "radar",
+    name: "Radar",
+    note: "HUD z echami gier",
+    width: 500,
+    height: 170,
+    animated: true,
+  },
+  {
+    id: "flip",
+    name: "Flip",
+    note: "Obracane karty",
+    width: 640,
+    height: 118,
+    animated: true,
+  },
+  {
+    id: "ladder",
+    name: "Ladder",
+    note: "Drabina rang",
+    width: 780,
+    height: 128,
+    animated: true,
+  },
 ];
 export const isAnimatedStyle = (style: BannerStyle) =>
   Boolean(presets.find((p) => p.id === style)?.animated);

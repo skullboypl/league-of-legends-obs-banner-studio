@@ -654,3 +654,496 @@
 .shape-hex .ab-avatar > small {
   bottom: 8px;
 }
+
+/* ---- TABS ---- */
+.ab-tabs {
+  display: flex;
+  flex-direction: column;
+  background: var(--banner-bg);
+  border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
+  border-radius: var(--radius);
+}
+.tabs-nav {
+  position: relative;
+  display: flex;
+  flex-shrink: 0;
+  height: 34px;
+  border-bottom: 1px solid color-mix(in srgb, var(--ink) 12%, transparent);
+  background: color-mix(in srgb, #000 20%, transparent);
+}
+.tabs-nav span {
+  flex: 1;
+  display: grid;
+  place-items: center;
+  font-size: 8px;
+  letter-spacing: 1.6px;
+  font-weight: 700;
+  color: color-mix(in srgb, var(--ink) 40%, transparent);
+  transition: color 0.35s;
+}
+.tabs-nav span.on {
+  color: var(--accent);
+}
+.tabs-nav i {
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+  height: 2px;
+  background: var(--accent);
+  box-shadow: 0 0 10px var(--accent);
+  transition: transform 0.55s cubic-bezier(0.3, 0.9, 0.3, 1);
+}
+.tabs-body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 24px;
+  animation: deck-in 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+.tabs-profile {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.tabs-lp {
+  margin-left: auto;
+  font-size: 34px;
+  letter-spacing: -1px;
+  color: var(--accent);
+}
+.tabs-lp small {
+  display: inline;
+  font-size: 12px;
+  letter-spacing: 0;
+}
+.tabs-grid {
+  display: flex;
+  gap: 38px;
+  align-items: center;
+}
+.tabs-grid > div {
+  display: grid;
+  gap: 8px;
+  justify-items: center;
+}
+.tabs-grid strong {
+  font-size: 28px;
+  letter-spacing: -0.6px;
+}
+.tabs-grid.big strong {
+  font-size: 30px;
+}
+.tabs-champs {
+  display: flex;
+  gap: 34px;
+}
+.tabs-champs > div {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.tabs-champs strong {
+  display: block;
+  font-size: 15px;
+}
+.ab-champ-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid var(--accent);
+  display: grid;
+  place-items: center;
+  font-weight: 800;
+  color: var(--accent);
+  background: #15161b;
+}
+.ab-champ-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1.12);
+}
+
+/* ---- RADAR ---- */
+.ab-radar {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 0 18px;
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--accent) 8%, transparent), transparent 50%),
+    var(--banner-bg);
+  border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent);
+  border-radius: min(var(--radius), 6px);
+}
+.radar-disc {
+  position: relative;
+  width: 138px;
+  height: 138px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  border: 1px solid color-mix(in srgb, var(--accent) 60%, transparent);
+  background: radial-gradient(circle, color-mix(in srgb, var(--accent) 10%, transparent), transparent 70%);
+  overflow: hidden;
+}
+.radar-ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+}
+.radar-ring.r1 {
+  inset: 22%;
+}
+.radar-ring.r2 {
+  inset: 10%;
+  border-style: dashed;
+}
+.radar-cross {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(color-mix(in srgb, var(--accent) 25%, transparent), color-mix(in srgb, var(--accent) 25%, transparent)) center / 1px 100% no-repeat,
+    linear-gradient(color-mix(in srgb, var(--accent) 25%, transparent), color-mix(in srgb, var(--accent) 25%, transparent)) center / 100% 1px no-repeat;
+}
+.radar-sweep {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, transparent 0 72%, color-mix(in srgb, var(--accent) 50%, transparent) 100%);
+  animation: orbit-rot var(--period, 5s) linear infinite;
+}
+.radar-blip {
+  position: absolute;
+  width: 9px;
+  height: 9px;
+  margin: -4.5px 0 0 -4.5px;
+  border-radius: 50%;
+  opacity: 0.3;
+  animation: radar-ping var(--period, 5s) ease-out infinite;
+}
+.radar-blip.win {
+  background: #42cf9b;
+  box-shadow: 0 0 8px #42cf9b;
+}
+.radar-blip.loss {
+  background: #eb3d4d;
+  box-shadow: 0 0 8px #eb3d4d;
+}
+.radar-core {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: var(--accent);
+}
+.radar-core .rank-emblem {
+  width: 30px;
+  height: 34px;
+}
+.radar-hud {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  display: grid;
+  gap: 8px;
+  padding: 12px 14px;
+  border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+  border-left: 3px solid var(--accent);
+  background: color-mix(in srgb, #000 28%, transparent);
+  overflow: hidden;
+}
+.radar-scan {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 26px;
+  top: -30px;
+  background: linear-gradient(transparent, color-mix(in srgb, var(--accent) 18%, transparent), transparent);
+  animation: radar-scan calc(var(--period, 5s) * 0.9) linear infinite;
+}
+.radar-name {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  min-width: 0;
+}
+.radar-name h2 {
+  font-size: 20px;
+  letter-spacing: -0.4px;
+}
+.radar-name span,
+.radar-name em {
+  font-style: normal;
+  font-size: 10px;
+  color: color-mix(in srgb, var(--ink) 55%, transparent);
+}
+.radar-name b {
+  font-size: 8px;
+  letter-spacing: 1px;
+  padding: 1px 5px;
+  border: 1px solid color-mix(in srgb, var(--ink) 25%, transparent);
+  border-radius: 3px;
+}
+.radar-rank {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  color: var(--accent);
+}
+.radar-rank span {
+  font-size: 11px;
+  letter-spacing: 1.4px;
+  font-weight: 700;
+}
+.radar-rank strong {
+  font-size: 30px;
+  line-height: 1;
+  letter-spacing: -1px;
+}
+.radar-rank strong small {
+  display: inline;
+  font-size: 11px;
+  letter-spacing: 0;
+}
+.radar-stats {
+  display: flex;
+  gap: 16px;
+  padding-top: 7px;
+  border-top: 1px dashed color-mix(in srgb, var(--ink) 18%, transparent);
+  overflow: hidden;
+}
+.radar-stats > div {
+  display: grid;
+  gap: 4px;
+}
+.radar-stats strong {
+  font-size: 14px;
+}
+@keyframes radar-ping {
+  0% {
+    opacity: 1;
+    transform: scale(1.7);
+  }
+  35% {
+    opacity: 0.4;
+    transform: none;
+  }
+  100% {
+    opacity: 0.3;
+  }
+}
+@keyframes radar-scan {
+  to {
+    transform: translateY(200px);
+  }
+}
+
+/* ---- FLIP ---- */
+.ab-flip {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 0 20px;
+  background: var(--banner-bg);
+  border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
+  border-radius: var(--radius);
+}
+.flip-board {
+  margin-left: auto;
+  display: flex;
+  gap: 8px;
+}
+.flip-card {
+  width: 92px;
+  height: 76px;
+  perspective: 600px;
+}
+.flip-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+}
+.flip-inner.flips {
+  animation: flip-turn var(--flip-period, 9s) cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+.flip-face {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  gap: 6px;
+  align-content: center;
+  justify-items: center;
+  padding: 0 6px;
+  border-radius: 8px;
+  background: linear-gradient(color-mix(in srgb, var(--ink) 12%, transparent), color-mix(in srgb, var(--ink) 5%, transparent));
+  border: 1px solid color-mix(in srgb, var(--ink) 14%, transparent);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  overflow: hidden;
+}
+.flip-face:after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 1px;
+  background: #0007;
+}
+.flip-face.back {
+  transform: rotateX(180deg);
+}
+.flip-face strong {
+  font-size: 19px;
+  letter-spacing: -0.4px;
+  max-width: 100%;
+}
+.flip-face .top-champs > span {
+  width: 20px;
+  height: 20px;
+}
+@keyframes flip-turn {
+  0%,
+  42% {
+    transform: rotateX(0deg);
+  }
+  50%,
+  92% {
+    transform: rotateX(180deg);
+  }
+  100% {
+    transform: rotateX(360deg);
+  }
+}
+
+/* ---- LADDER ---- */
+.ab-ladder {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 12px 22px 12px;
+  background: var(--banner-bg);
+  border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
+  border-radius: var(--radius);
+}
+.ladder-top {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.ladder-top .ab-avatar {
+  width: 46px;
+  height: 46px;
+}
+.ladder-rank {
+  margin-left: 6px;
+  display: grid;
+  gap: 3px;
+  color: var(--accent);
+}
+.ladder-rank span {
+  font-size: 9px;
+  letter-spacing: 1.4px;
+  font-weight: 700;
+}
+.ladder-rank strong {
+  font-size: 26px;
+  line-height: 1;
+  letter-spacing: -0.8px;
+}
+.ladder-rank strong small {
+  display: inline;
+  font-size: 10px;
+  letter-spacing: 0;
+}
+.ladder-stats {
+  margin-left: auto;
+  display: flex;
+  gap: 18px;
+  overflow: hidden;
+}
+.ladder-stats > div {
+  display: grid;
+  gap: 5px;
+}
+.ladder-stats strong {
+  font-size: 15px;
+}
+.ladder-track {
+  position: relative;
+  display: flex;
+  gap: 4px;
+  padding-top: 12px;
+}
+.ladder-cell {
+  flex: 1;
+  display: grid;
+  gap: 4px;
+}
+.ladder-cell i {
+  display: block;
+  height: 6px;
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--ink) 12%, transparent);
+  position: relative;
+  overflow: hidden;
+}
+.ladder-cell i:after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, var(--accent), color-mix(in srgb, var(--accent) 60%, #fff));
+  transform-origin: left;
+  transform: scaleX(var(--fill, 0));
+  animation: ladder-grow 1.2s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  animation-delay: inherit;
+}
+.ladder-cell small {
+  font-size: 7px;
+  text-align: center;
+  letter-spacing: 0.8px;
+}
+.ladder-cell.here small {
+  color: var(--accent);
+  font-weight: 700;
+}
+.ladder-marker {
+  position: absolute;
+  top: -6px;
+  width: 22px;
+  height: 25px;
+  margin-left: -11px;
+  color: var(--accent);
+  filter: drop-shadow(0 0 6px var(--accent));
+  animation: ladder-bob 1.8s ease-in-out infinite;
+}
+.ladder-marker .rank-emblem {
+  width: 100%;
+  height: 100%;
+}
+@keyframes ladder-grow {
+  from {
+    transform: scaleX(0);
+  }
+}
+@keyframes ladder-bob {
+  50% {
+    transform: translateY(-3px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .radar-sweep,
+  .radar-blip,
+  .radar-scan,
+  .flip-inner.flips,
+  .ladder-cell i:after,
+  .ladder-marker,
+  .tabs-body {
+    animation: none;
+  }
+}

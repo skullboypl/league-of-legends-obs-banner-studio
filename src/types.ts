@@ -10,7 +10,11 @@ export type BannerStyle =
   | "deck"
   | "orbit"
   | "marquee"
-  | "hex";
+  | "hex"
+  | "tabs"
+  | "radar"
+  | "flip"
+  | "ladder";
 
 export type ExtraView = "strip" | "pills" | "rings" | "cycle" | "ticker";
 
