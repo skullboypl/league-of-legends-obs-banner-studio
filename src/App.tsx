@@ -1,5 +1,6 @@
 import { FormEvent, ReactNode, useEffect, useRef, useState } from "react";
 import { fetchPlayer, parseRiotId } from "./api";
+import { watchForUpdates } from "./updates";
 import { defaultSettings, platforms, samplePlayer } from "./data";
 import { BannerFrame, RankEmblem } from "./PlayerBanner";
 import {
@@ -107,6 +108,14 @@ export function App() {
     loadPlayer();
     return () => request.current?.abort();
   }, []);
+  useEffect(
+    () =>
+      watchForUpdates(() => {
+        setNotice("Wykryto nową wersję – odświeżam…");
+        window.setTimeout(() => location.reload(), 2500);
+      }),
+    [],
+  );
   useEffect(() => {
     if (!notice) return;
     const timer = setTimeout(() => setNotice(""), 3500);

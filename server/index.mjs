@@ -120,6 +120,12 @@ app.get('/api/player', async (request, response) => {
 
 registerDocs(app);
 
-app.use(express.static(path.join(root, 'dist')));
+app.use(
+  express.static(path.join(root, 'dist'), {
+    setHeaders: (response, file) => {
+      if (file.endsWith('version.json') || file.endsWith('index.html')) response.set('Cache-Control', 'no-store');
+    },
+  }),
+);
 app.use((_request, response) => response.sendFile(path.join(root, 'dist', 'index.html')));
 app.listen(port, () => console.log(`LoL Banner API listening on http://localhost:${port}`));

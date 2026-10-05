@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { fetchPlayer } from "./api";
 import { BannerFrame } from "./PlayerBanner";
 import { settingsFromUrl } from "./settings";
+import { watchForUpdates } from "./updates";
 import type { PlayerData } from "./types";
 
 export function Widget() {
@@ -9,6 +10,9 @@ export function Widget() {
   const [player, setPlayer] = useState<PlayerData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+
+  // Źródło przeglądarki w OBS samo ładuje nową wersję, bez komunikatu na scenie.
+  useEffect(() => watchForUpdates(() => location.reload()), []);
 
   useEffect(() => {
     let active = true;
