@@ -2848,53 +2848,62 @@ html.widget #root {
   width: 100%;
 }
 
-/* Przełącznik języka w menu */
+/* Przełącznik języka w menu: pionowa lista pod dokumentacją */
 .sidebar-lang {
-  display: flex;
-  gap: 6px;
-  margin: 18px 4px 0;
+  display: grid;
+  gap: 4px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid #23232a;
 }
 .sidebar-lang button {
-  flex: 1;
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 6px;
-  padding: 8px 6px;
+  gap: 12px;
+  width: 100%;
+  padding: 10px 14px;
+  text-align: left;
+  font-size: 12px;
+  font-weight: 600;
+  color: #a3a3ae;
+  background: transparent;
+  border: 1px solid transparent;
   border-radius: 6px;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.6px;
-  color: #8e8e99;
-  background: #17171c;
-  border: 1px solid #25252b;
+}
+.sidebar-lang button:hover {
+  background: #1b1b21;
+  color: #fff;
 }
 .sidebar-lang button[aria-pressed="true"] {
   color: #fff;
   background: #29191e;
-  border-color: #4b262e;
+  border-color: #eb3d4d;
 }
 .sidebar-lang .flag {
-  width: 16px;
-  height: 11px;
+  width: 20px;
+  height: 14px;
+  flex-shrink: 0;
   border-radius: 2px;
   box-shadow: 0 0 0 1px #ffffff22;
 }
 @media (max-width: 960px) {
-  .sidebar-lang {
-    flex-direction: column;
-    margin: 18px 0 0;
+  .sidebar-lang button {
+    justify-content: center;
+    padding: 10px 5px;
   }
   .sidebar-lang button > span {
-    display: none;
-  }
-  .sidebar nav button > span {
     display: none;
   }
 }
 @media (max-width: 720px) {
   .sidebar-lang {
-    flex-direction: row;
+    display: flex;
     margin: 0;
+    padding: 0;
+    border: 0;
+  }
+  .sidebar-lang button {
+    padding: 10px;
+    width: auto;
   }
 }

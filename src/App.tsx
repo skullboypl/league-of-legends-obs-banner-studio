@@ -1,7 +1,7 @@
 import { FormEvent, ReactNode, useEffect, useRef, useState } from "react";
 import { fetchPlayer, parseRiotId } from "./api";
 import { watchForUpdates } from "./updates";
-import { languages, tr } from "./i18n";
+import { tr, type Lang } from "./i18n";
 import { defaultSettings, platforms, samplePlayer } from "./data";
 import { BannerFrame, RankEmblem } from "./PlayerBanner";
 import {
@@ -86,6 +86,12 @@ function Icon({ name }: { name: keyof typeof paths }) {
     </svg>
   );
 }
+const languageOrder: Lang[] = ["en", "pl", "de"];
+const languageName: Record<Lang, string> = {
+  en: "Angielski",
+  pl: "Polski",
+  de: "Niemiecki",
+};
 function Flag({ id }: { id: string }) {
   return (
     <svg className="flag" viewBox="0 0 60 40" aria-hidden="true">
@@ -447,19 +453,6 @@ export function App() {
             </button>
           ))}
         </nav>
-        <div className="sidebar-lang" role="group" aria-label={tl("Język")}>
-          {languages.map((entry) => (
-            <button
-              key={entry.id}
-              aria-pressed={settings.lang === entry.id}
-              title={entry.label}
-              onClick={() => update("lang", entry.id)}
-            >
-              <Flag id={entry.id} />
-              <span>{entry.id.toUpperCase()}</span>
-            </button>
-          ))}
-        </div>
         <div className="docs-nav" role="navigation" aria-label={tl("Dokumentacja")}>
           <a href="https://vxh.pl/" className="hub-link">
             <Icon name="home" />
@@ -476,6 +469,19 @@ export function App() {
             <span>{tl("Dokumentacja")}</span>
             <span className="nav-arrow">›</span>
           </a>
+          <div className="sidebar-lang" role="group" aria-label={tl("Język")}>
+            {languageOrder.map((id) => (
+              <button
+                key={id}
+                aria-pressed={settings.lang === id}
+                title={tl(languageName[id])}
+                onClick={() => update("lang", id)}
+              >
+                <Flag id={id} />
+                <span>{tl(languageName[id])}</span>
+              </button>
+            ))}
+          </div>
         </div>
         <div className="sidebar-bottom">
           <div className="game-badge">
