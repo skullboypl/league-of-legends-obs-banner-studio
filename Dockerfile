@@ -11,7 +11,7 @@ RUN pnpm install --frozen-lockfile
 COPY . .
 RUN pnpm run build
 
-FROM nginx:1.27-alpine
+FROM nginx:1.30-alpine
 
 # Nginx serves the Studio and proxies /api to the protected Riot API process.
 RUN apk add --no-cache nodejs
